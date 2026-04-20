@@ -8,12 +8,17 @@ Flow:
 """
 from __future__ import annotations
 
+import random
 from typing import Any
 
 import requests
 
 from src.logging_setup import get_logger
-from src.prompts import build_dictation_text_prompt
+from src.prompts import (
+    DICTATION_SCENARIOS,
+    DICTATION_STYLES,
+    build_dictation_text_prompt,
+)
 from src.tasks.base import TaskInstruction
 
 log = get_logger(__name__)
@@ -36,11 +41,37 @@ def generate_text(
     niveau: str,
     model: str,
     sentences: int = 3,
+    avoid_recent: list[str] | None = None,
 ) -> str:
+    """Generate a dictation text with heavy variety injection.
+
+    Strategy:
+    - Random scenario + random style per call (from module lists in prompts.py).
+    - High temperature so the model actually diverges between calls.
+    - Optional ``avoid_recent``: last N dictation texts — passed to the prompt
+      so the model has a concrete negative context and doesn't repeat.
+    """
+    scenario = random.choice(DICTATION_SCENARIOS)
+    style = random.choice(DICTATION_STYLES)
     messages = build_dictation_text_prompt(
         language=language, level=level, niveau=niveau, sentences=sentences,
+        scenario=scenario, style=style,
     )
-    response = client.chat.completions.create(model=model, messages=messages)
+    if avoid_recent:
+        joined = "\n\n".join(f"- {t[:200]}" for t in avoid_recent[-3:])
+        messages.append({
+            "role": "user",
+            "content": (
+                f"IMPORTANT: do NOT produce a text that resembles any of these "
+                f"previously-generated dictations (different opening, different "
+                f"vocabulary, different scenario focus):\n\n{joined}"
+            ),
+        })
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0.9,
+    )
     return response.choices[0].message.content.strip()
 
 

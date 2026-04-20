@@ -252,10 +252,51 @@ def build_correction_prompt(
     ]
 
 
+DICTATION_SCENARIOS: list[str] = [
+    "a morning routine", "a weather report", "a phone call with a friend",
+    "shopping at a market", "an argument about dinner", "a childhood memory",
+    "a train journey", "getting lost in a city", "a cooking mishap",
+    "a surprise visit", "a rainy afternoon", "buying a birthday gift",
+    "a first day at work", "a lost key", "a café conversation",
+    "a snowy morning", "meeting a neighbor", "watching a football match",
+    "a broken phone", "a walk in the forest", "ordering at a restaurant",
+    "a delayed flight", "a new haircut", "a weekend plan",
+    "a funny mistake", "a museum visit", "a power outage",
+    "learning to cook", "a garden in summer", "a letter from grandma",
+    "chasing the bus", "finding a coin on the street", "a piano lesson",
+    "borrowing a book", "a misunderstanding", "an unexpected compliment",
+]
+
+DICTATION_STYLES: list[str] = [
+    "first-person narrative",
+    "third-person description",
+    "a short dialogue between two speakers",
+    "an inner thought / monologue",
+    "a brief news-style report",
+    "a question followed by an answer",
+]
+
+
 def build_dictation_text_prompt(
     *, language: str, level: str, niveau: str, sentences: int = 3,
+    scenario: str | None = None, style: str | None = None,
 ) -> list[dict]:
-    """Ask the LLM to produce a short text in the learning language for dictation."""
+    """Ask the LLM to produce a short text in the learning language for dictation.
+
+    If ``scenario`` or ``style`` are not provided, a random one from the
+    module-level lists is picked by the task module — the prompt builder stays
+    pure (no randomness inside it).
+    """
+    scenario_line = (
+        f"Scenario: {scenario}. "
+        if scenario else
+        ""
+    )
+    style_line = (
+        f"Style: {style}. "
+        if style else
+        ""
+    )
     return [
         {
             "role": "system",
@@ -264,7 +305,9 @@ def build_dictation_text_prompt(
                 f"Output ONLY the text itself — no title, no introduction, no "
                 f"commentary. The text must be in {language}, grammatically correct, "
                 f"natural-sounding, and use punctuation that is audible (commas, "
-                f"periods, question marks). No quotation marks around the whole thing."
+                f"periods, question marks). No quotation marks around the whole thing. "
+                f"CRITICAL: avoid cliché openings like 'Je m'appelle X' or 'Hello, "
+                f"my name is…' — be creative within the CEFR constraints."
             ),
         },
         {
@@ -272,8 +315,11 @@ def build_dictation_text_prompt(
             "content": (
                 f"Generate a {sentences}-sentence dictation text in {language}. "
                 f"CEFR level: {level}. Register: {niveau}. "
+                f"{scenario_line}{style_line}"
                 f"Make it coherent — a small scene, thought, or micro-story — not "
-                f"disconnected sentences. Keep the overall length under ~60 words."
+                f"disconnected sentences. Keep the overall length under ~60 words. "
+                f"This must be DIFFERENT from any other dictation text you have "
+                f"generated — vary vocabulary, grammar patterns, and opening phrases."
             ),
         },
     ]

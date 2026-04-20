@@ -687,15 +687,19 @@ def _render_dictation(
     if st.button(t("dict_generate", ui_lang), type="primary") or "dictation_bytes" not in st.session_state:
         try:
             with st.status(t("dict_status_text", ui_lang), expanded=False) as status:
+                recent = st.session_state.get("dictation_history", [])
                 text = dict_task.generate_text(
                     client, language=language_en, level=level, niveau=niveau,
-                    model=model, sentences=3,
+                    model=model, sentences=3, avoid_recent=recent,
                 )
                 status.update(label=t("dict_status_tts", ui_lang))
                 audio = dict_task.synthesize_speech(text, api_key=el_key)
                 st.session_state["dictation_text"] = text
                 st.session_state["dictation_bytes"] = audio
                 st.session_state["dictation_revealed"] = False
+                # keep the last 5 dictations in session so avoid_recent gets a corpus
+                recent = recent + [text]
+                st.session_state["dictation_history"] = recent[-5:]
                 state.num_tasks_generated = getattr(state, "num_tasks_generated", 0) + 1
                 status.update(label=t("dict_status_ready", ui_lang), state="complete")
         except dict_task.TTSUnavailable as exc:
