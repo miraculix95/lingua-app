@@ -244,13 +244,14 @@ def _detect_initial_ui_lang() -> str:
     return detected
 
 
-def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str]:
-    """Render sidebar and return (mentor, level, niveau, model)."""
+def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, str]:
+    """Render sidebar and return (mentor, level, niveau, model, learning_language)."""
     state = st.session_state["state"]
 
     with st.sidebar:
         # Dark mode first — users can switch theme before any other widget loads.
-        st.toggle(t("dark_mode", ui_lang), value=st.session_state.get("dark_mode", False), key="dark_mode")
+        # Default ON (Bastian's pref); toggle persists once touched.
+        st.toggle(t("dark_mode", ui_lang), value=st.session_state.get("dark_mode", True), key="dark_mode")
 
         # Interface-language — everything below respects it on rerun.
         lang_labels = list(UI_LANGS.keys())
@@ -262,7 +263,26 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str]:
             key="ui_lang_label",
         )
 
-        language_localized = language_display(language, ui_lang)
+        # Learning language — user can switch the target without restarting.
+        learn_displays = [language_display(k, ui_lang).capitalize() for k in LANGUAGES]
+        current_learn_idx = LANGUAGES.index(language) if language in LANGUAGES else 0
+        picked_learn_display = st.selectbox(
+            t("learning_language", ui_lang),
+            learn_displays,
+            index=current_learn_idx,
+            key="learning_lang_display",
+        )
+        # Resolve picked display back to internal key and persist.
+        picked_learn_key = LANGUAGES[learn_displays.index(picked_learn_display)]
+        if picked_learn_key != state.learning_language:
+            state.learning_language = picked_learn_key
+            # Clear vocab/task state when switching — old French vocabs are useless for Spanish.
+            state.vocab_list = []
+            state.task = ""
+            state.auto_gen_vocabs = False
+            st.rerun()
+
+        language_localized = language_display(picked_learn_key, ui_lang)
         st.markdown(f"### {t('sidebar_title', ui_lang, language=language_localized)}")
 
         with st.expander(t("coach_and_style", ui_lang), expanded=True):
@@ -340,7 +360,7 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str]:
     state.url_extract_trigger = url_extract
     state.number_of_words = number_of_words
 
-    return mentor, level, niveau, model
+    return mentor, level, niveau, model, picked_learn_key
 
 
 def _handle_vocab_sources(
@@ -521,6 +541,8 @@ def main() -> None:
         ("file_path_extract_trigger", None),
         ("uploaded_vocab_file_trigger", None),
         ("url_extract_trigger", ""),
+        # Learning language: initial seed from --language CLI; sidebar overrides.
+        ("learning_language", args.language),
     ]:
         if not hasattr(state, attr):
             setattr(state, attr, default)
@@ -534,8 +556,12 @@ def main() -> None:
     else:
         ui_lang = detected
 
-    mentor, level, niveau, model = _render_sidebar(language, ui_lang)
-    # If user just changed the dropdown, ui_lang below reflects new choice
+    mentor, level, niveau, model, learning_language = _render_sidebar(
+        state.learning_language, ui_lang,
+    )
+    # Sidebar's learning-language pick is authoritative after this point.
+    language = learning_language
+    # If user just changed the UI-lang dropdown, reflect it immediately.
     ui_lang = UI_LANGS.get(st.session_state.get("ui_lang_label", ""), ui_lang)
 
     _apply_theme()

@@ -175,6 +175,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "dir_to_native": "→ into {native} (understand)",
         "current_vocabs": "📖 Current vocabulary ({n})",
         "no_vocabs_yet": "_No vocabulary loaded yet._",
+        "learning_language": "🎯 Learning language",
     },
     "de": {
         "app_title": "{language} — Lernprogramm",
@@ -251,6 +252,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "dir_to_native": "→ ins {native} (verstehen)",
         "current_vocabs": "📖 Aktuelle Vokabeln ({n})",
         "no_vocabs_yet": "_Noch keine Vokabeln geladen._",
+        "learning_language": "🎯 Lernsprache",
     },
     "fr": {
         "app_title": "{language} — Tuteur de langue",
@@ -327,6 +329,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "dir_to_native": "→ vers {native} (comprendre)",
         "current_vocabs": "📖 Vocabulaire actuel ({n})",
         "no_vocabs_yet": "_Aucun vocabulaire chargé._",
+        "learning_language": "🎯 Langue à apprendre",
     },
     "es": {
         "app_title": "{language} — Tutor de idiomas",
@@ -403,6 +406,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "dir_to_native": "→ a {native} (comprender)",
         "current_vocabs": "📖 Vocabulario actual ({n})",
         "no_vocabs_yet": "_Aún no se ha cargado vocabulario._",
+        "learning_language": "🎯 Idioma a aprender",
     },
 }
 
