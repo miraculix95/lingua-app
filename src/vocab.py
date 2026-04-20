@@ -55,6 +55,12 @@ def generate_vocabulary_via_function_call(
     niveau: str,
     model: str,
 ) -> list[str]:
+    """Ask the LLM to emit a vocabulary list via structured tool-calling.
+
+    Uses the modern ``tools`` / ``tool_choice`` API (not the deprecated
+    ``functions``/``function_call`` — OpenRouter providers like Mistral
+    reject those with HTTP 400).
+    """
     user_prompt = build_vocab_autogen_prompt(language=language, level=level, niveau=niveau)
     response = client.chat.completions.create(
         model=model,
@@ -62,11 +68,11 @@ def generate_vocabulary_via_function_call(
             {"role": "system", "content": "Du bist ein Sprachlehrer."},
             {"role": "user", "content": user_prompt},
         ],
-        functions=[VOCAB_FUNCTION_SPEC],
-        function_call={"name": "generate_vocabulary_list"},
+        tools=[{"type": "function", "function": VOCAB_FUNCTION_SPEC}],
+        tool_choice={"type": "function", "function": {"name": "generate_vocabulary_list"}},
     )
-    args_json = response.choices[0].message.function_call.arguments
-    return json.loads(args_json)["vocabulary"]
+    tool_call = response.choices[0].message.tool_calls[0]
+    return json.loads(tool_call.function.arguments)["vocabulary"]
 
 
 def fetch_article_text(url: str) -> str:

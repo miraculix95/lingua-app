@@ -30,8 +30,19 @@ def test_fake_cycles_through_responses():
 
 
 def test_fake_supports_function_call_arguments():
+    # Legacy path — kept so old tests still pass during migration.
     client = FakeOpenAIClient(
         responses=[{"function_arguments": '{"vocabulary": ["a","b"]}'}]
     )
     r = client.chat.completions.create(model="x", messages=[])
     assert r.choices[0].message.function_call.arguments == '{"vocabulary": ["a","b"]}'
+
+
+def test_fake_supports_tool_calls():
+    client = FakeOpenAIClient(
+        responses=[{"tool_arguments": '{"vocabulary": ["a","b"]}'}]
+    )
+    r = client.chat.completions.create(model="x", messages=[])
+    tool = r.choices[0].message.tool_calls[0]
+    assert tool.function.arguments == '{"vocabulary": ["a","b"]}'
+    assert tool.type == "function"

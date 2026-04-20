@@ -45,12 +45,18 @@ def test_extract_vocabulary_records_user_message():
 
 def test_generate_vocabulary_via_function_call_parses_json():
     payload = json.dumps({"vocabulary": ["a", "b", "c"]})
-    fake = FakeOpenAIClient(responses=[{"function_arguments": payload}])
+    fake = FakeOpenAIClient(responses=[{"tool_arguments": payload}])
     result = generate_vocabulary_via_function_call(
         fake,
         language="französisch",
         level="B1",
         niveau="Standardsprache",
-        model="gpt-4o-mini",
+        model="google/gemini-2.5-flash-lite",
     )
     assert result == ["a", "b", "c"]
+    call = fake.calls[0]
+    # Must use new tools-API, not deprecated functions/function_call.
+    assert "tools" in call
+    assert "tool_choice" in call
+    assert "functions" not in call
+    assert "function_call" not in call

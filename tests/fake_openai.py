@@ -6,8 +6,10 @@ Matches the shape used by the codebase::
 
 Each response can be:
 - a plain string -> goes into ``choices[0].message.content``
+- a dict with key ``"tool_arguments"`` -> goes into
+  ``choices[0].message.tool_calls[0].function.arguments`` (modern API)
 - a dict with key ``"function_arguments"`` -> goes into
-  ``choices[0].message.function_call.arguments``
+  ``choices[0].message.function_call.arguments`` (legacy, kept for old tests)
 """
 from __future__ import annotations
 
@@ -16,14 +18,23 @@ from typing import Any
 
 
 @dataclass
-class _Message:
-    content: str | None = None
-    function_call: Any = None
+class _FunctionPayload:
+    arguments: str
+    name: str = ""
 
 
 @dataclass
-class _FunctionCall:
-    arguments: str
+class _ToolCall:
+    function: _FunctionPayload
+    id: str = "call_fake"
+    type: str = "function"
+
+
+@dataclass
+class _Message:
+    content: str | None = None
+    function_call: Any = None
+    tool_calls: list[_ToolCall] | None = None
 
 
 @dataclass
@@ -47,9 +58,12 @@ class _CompletionsAPI:
         raw = self.parent.responses[idx]
         if isinstance(raw, str):
             return _Response([_Choice(_Message(content=raw))])
+        if isinstance(raw, dict) and "tool_arguments" in raw:
+            tool = _ToolCall(function=_FunctionPayload(arguments=raw["tool_arguments"]))
+            return _Response([_Choice(_Message(tool_calls=[tool]))])
         if isinstance(raw, dict) and "function_arguments" in raw:
             return _Response(
-                [_Choice(_Message(function_call=_FunctionCall(arguments=raw["function_arguments"])))]
+                [_Choice(_Message(function_call=_FunctionPayload(arguments=raw["function_arguments"])))]
             )
         raise TypeError(f"Unsupported response type: {type(raw)}")
 
