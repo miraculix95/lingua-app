@@ -2,29 +2,34 @@ from src.tasks.quiz import build_quiz, score_answers
 from tests.fake_openai import FakeOpenAIClient
 
 
-def test_build_quiz_calls_llm_per_word():
-    # All responses identical -> order-independent (random.sample shuffles).
-    fake = FakeOpenAIClient(responses=["Haus"])
+def test_build_quiz_returns_translations_in_one_call():
+    import json
+    payload = {"translations": {"maison": "Haus", "voiture": "Auto", "chaise": "Stuhl"}}
+    fake = FakeOpenAIClient(responses=[{"tool_arguments": json.dumps(payload)}])
     quiz = build_quiz(
         fake,
         vocab_list=["maison", "voiture", "chaise"],
-        language="französisch",
+        language="French",
         count=3,
-        model="gpt-4o-mini",
+        model="google/gemini-2.5-flash-lite",
+        ui_language_name="German",
     )
     assert set(quiz.keys()) == {"maison", "voiture", "chaise"}
-    assert all(v == "Haus" for v in quiz.values())
-    assert len(fake.calls) == 3
+    # ONE API call for the whole quiz — not one per word.
+    assert len(fake.calls) == 1
+    # Uses tools API:
+    assert "tools" in fake.calls[0]
 
 
 def test_build_quiz_caps_at_vocab_size():
-    fake = FakeOpenAIClient(responses=["Haus"])
+    import json
+    fake = FakeOpenAIClient(responses=[{"tool_arguments": json.dumps({"translations": {"maison": "Haus"}})}])
     quiz = build_quiz(
         fake,
         vocab_list=["maison"],
-        language="französisch",
+        language="French",
         count=10,
-        model="gpt-4o-mini",
+        model="google/gemini-2.5-flash-lite",
     )
     assert len(quiz) == 1
 

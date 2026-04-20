@@ -48,7 +48,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "",
         "Write a text and get feedback",
         "Fill in a cloze text",
-        "Translate German sentences",
+        "Translate sentences",                       # direction-neutral
         "Vocabulary quiz",
         "Build a sentence",
         "Find and fix errors",
@@ -60,7 +60,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "",
         "Text schreiben und korrigieren",
         "Lückentext ausfüllen",
-        "Deutsche Sätze übersetzen",
+        "Sätze übersetzen",                          # direction-neutral
         "Vokabel-Quiz",
         "Satz bauen",
         "Fehler finden und korrigieren",
@@ -72,7 +72,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "",
         "Rédiger un texte et le faire corriger",
         "Remplir un texte à trous",
-        "Traduire des phrases allemandes",
+        "Traduire des phrases",                      # direction-neutral
         "Quiz de vocabulaire",
         "Construire une phrase",
         "Trouver et corriger les erreurs",
@@ -84,7 +84,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "",
         "Escribir un texto y recibir corrección",
         "Completar un texto con huecos",
-        "Traducir frases en alemán",
+        "Traducir frases",                           # direction-neutral
         "Quiz de vocabulario",
         "Construir una frase",
         "Encontrar y corregir errores",
