@@ -191,6 +191,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "dict_status_tts": "🎙️ Synthesizing voice…",
         "dict_status_ready": "✅ Dictation ready — listen and transcribe",
         "dict_tts_error": "❌ TTS failed: {err}",
+        "elevenlabs_key": "🎙️ ElevenLabs API key (optional)",
+        "elevenlabs_key_help": "For dictation TTS. Stays in session, never stored. Get one at elevenlabs.io.",
+        "el_source_byok": "🎙️ Voice: your ElevenLabs key (BYOK)",
+        "el_source_env": "🎙️ Voice: server .env ElevenLabs",
     },
     "de": {
         "app_title": "{language} — Lernprogramm",
@@ -278,6 +282,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "dict_status_tts": "🎙️ Stimme wird synthetisiert…",
         "dict_status_ready": "✅ Diktat bereit — anhören und mitschreiben",
         "dict_tts_error": "❌ TTS-Fehler: {err}",
+        "elevenlabs_key": "🎙️ ElevenLabs API-Key (optional)",
+        "elevenlabs_key_help": "Für Diktat-TTS. Bleibt in Session, wird nie gespeichert. Hol einen auf elevenlabs.io.",
+        "el_source_byok": "🎙️ Stimme: dein ElevenLabs-Key (BYOK)",
+        "el_source_env": "🎙️ Stimme: Server .env ElevenLabs",
     },
     "fr": {
         "app_title": "{language} — Tuteur de langue",
@@ -365,6 +373,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "dict_status_tts": "🎙️ Synthèse vocale…",
         "dict_status_ready": "✅ Dictée prête — écoute et transcris",
         "dict_tts_error": "❌ Erreur TTS : {err}",
+        "elevenlabs_key": "🎙️ Clé API ElevenLabs (facultatif)",
+        "elevenlabs_key_help": "Pour la TTS de la dictée. Reste en session, jamais stockée. Obtiens-en une sur elevenlabs.io.",
+        "el_source_byok": "🎙️ Voix : ta clé ElevenLabs (BYOK)",
+        "el_source_env": "🎙️ Voix : .env serveur ElevenLabs",
     },
     "es": {
         "app_title": "{language} — Tutor de idiomas",
@@ -452,6 +464,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "dict_status_tts": "🎙️ Sintetizando la voz…",
         "dict_status_ready": "✅ Dictado listo — escucha y transcribe",
         "dict_tts_error": "❌ Error de TTS: {err}",
+        "elevenlabs_key": "🎙️ Clave API ElevenLabs (opcional)",
+        "elevenlabs_key_help": "Para la TTS del dictado. Solo en la sesión, nunca se guarda. Consigue una en elevenlabs.io.",
+        "el_source_byok": "🎙️ Voz: tu clave ElevenLabs (BYOK)",
+        "el_source_env": "🎙️ Voz: .env servidor ElevenLabs",
     },
 }
 

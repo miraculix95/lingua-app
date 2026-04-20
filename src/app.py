@@ -206,6 +206,21 @@ def _resolve_api_key() -> tuple[str | None, str]:
     return None, "none"
 
 
+def _resolve_elevenlabs_key() -> tuple[str | None, str]:
+    """BYOK priority for ElevenLabs: session-state > ELEVENLABS_KEY env.
+
+    Returns (key, source_label). source_label ∈ {"byok", "env", "none"}.
+    """
+    load_dotenv(find_dotenv(usecwd=True))
+    byok = st.session_state.get("byok_elevenlabs_key", "").strip()
+    if byok:
+        return byok, "byok"
+    env = os.environ.get("ELEVENLABS_KEY", "").strip()
+    if env:
+        return env, "env"
+    return None, "none"
+
+
 def _build_client(key: str, source: str) -> openai.OpenAI:
     if source == "openai":
         return openai.OpenAI(api_key=key)
@@ -324,6 +339,17 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             )
             if api_key_input != st.session_state.get("byok_key", ""):
                 st.session_state["byok_key"] = api_key_input
+
+            # Optional: ElevenLabs BYOK for dictation TTS.
+            el_key_input = st.text_input(
+                t("elevenlabs_key", ui_lang),
+                type="password",
+                value=st.session_state.get("byok_elevenlabs_key", ""),
+                help=t("elevenlabs_key_help", ui_lang),
+                placeholder="xi-...",
+            )
+            if el_key_input != st.session_state.get("byok_elevenlabs_key", ""):
+                st.session_state["byok_elevenlabs_key"] = el_key_input
 
             _default_model = default_model_for_language(language)
             tier_keys = list(MODEL_TIERS.keys())
@@ -724,10 +750,14 @@ def _render_dictation(
     import streamlit.components.v1 as components
 
     state = st.session_state["state"]
-    el_key = os.environ.get("ELEVENLABS_KEY", "").strip()
+    el_key, el_source = _resolve_elevenlabs_key()
     if not el_key:
         st.warning(t("dict_no_key", ui_lang))
         return
+    if el_source == "byok":
+        st.caption(t("el_source_byok", ui_lang))
+    else:
+        st.caption(t("el_source_env", ui_lang))
 
     if st.button(t("dict_generate", ui_lang), type="primary") or "dictation_bytes" not in st.session_state:
         try:
