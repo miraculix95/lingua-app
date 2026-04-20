@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
+</head>
+
+
+    
+
+<body>
+    <h1>Login</h1>
+    <form hx-post="http://127.0.0.1:8000/login" enctype="application/x-www-form-urlencoded">
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Passwort">
+        <button type="submit">Login</button>
+    </form>
+
+    <h1>Registrierung</h1>
+    <form hx-post="http://127.0.0.1:8000/register"  hx-target="#response_register">
+        <input type="text" name="username" placeholder="">
+        <input type="password" name="password" placeholder="">
+        <button type="submit">Registrieren</button>
+    </form>
+    <div id="response_register"></div>
+
+</body>
+</html>
+
+<script>
+    document.body.addEventListener('htmx:afterRequest', function(event) {
+        let response = event.detail.xhr.responseText;
+        try {
+            let json = JSON.parse(response);
+            
+            if (json.access_token) {
+                console.log("Token gespeichert:", json.access_token);
+                localStorage.setItem("token", json.access_token);  // Token speichern
+            }
+    
+            if (json.redirect) {
+                console.log("Weiterleitung zu:", json.redirect);
+                window.location.href = json.redirect;  // Redirect ausführen
+            }
+    
+        } catch (e) {
+            console.error("Fehler beim JSON-Parsing:", e);
+        }
+    });
+</script>
+
+<script>
+    document.body.addEventListener("htmx:configRequest", function(event) {
+        let token = localStorage.getItem("token");
+        if (token) {
+            event.detail.headers["Authorization"] = "Bearer " + token;
+        }
+    });
+</script>

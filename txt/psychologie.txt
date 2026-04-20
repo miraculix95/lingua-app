@@ -1,0 +1,13 @@
+### Persönlichkeitsfragen - Über ChatGPT gefunden
+
+O = "Hast du in letzter Zeit etwas Neues ausprobiert, sei es ein Hobby oder eine Art von Küche? Wie war das für dich?"
+C = "Wie gehst du normalerweise deinen Tag an? Bist du eher der Typ, der alles im Voraus plant, oder lässt du die Dinge auf sich zukommen?"
+E = "Wie verbringst du am liebsten deine Wochenenden? Bist du viel mit Freunden unterwegs oder genießt du auch mal gerne die Ruhe zu Hause?"
+A = "Wie gehst du mit Meinungsverschiedenheiten um? Versuchst du eher, den Frieden zu bewahren, oder sprichst du deine Meinung direkt aus?"
+N = "Was machst du, um dich zu entspannen, wenn du gestresst bist?"
+
+Extraversion = "Wie tankst du am besten neue Energie? Eher durch Aktivitäten mit anderen oder durch Zeit für dich allein?"
+Sensing = "Wie gehst du an ein neues Projekt heran? Legst du viel Wert auf Details und Fakten oder denkst du eher über die langfristigen Möglichkeiten nach?"
+Feeling = "Wie triffst du wichtige Entscheidungen? Überlegst du dir alle Vor- und Nachteile genau oder vertraust du mehr auf dein Bauchgefühl?"
+Lifestyle = "Wenn du vor einer Aufgabe stehst, planst du sie gerne im Voraus oder gehst du lieber spontan an die Sache heran?"
+Selbstwahrnehmung = "Wenn du dich selbst in drei Worten beschreiben müsstest, welche wären das?"

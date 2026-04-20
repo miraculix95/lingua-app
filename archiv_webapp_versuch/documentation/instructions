@@ -1,0 +1,13 @@
+Backend starten / fast-api
+----------------------------
+cd backend
+uvicorn main:app --reload
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload --log-level debug
+
+Frontend starten / später nginx
+--------------------------------
+cd frontend
+python -m http.server 8080
+
+http://localhost:8080/

@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Secrets
+.env
+.env.local
+*.key
+users.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Project artifacts
+out/*.py
+news_article.txt
+radio_text.txt
+*.mp3
+*.mp4
+*.wav
+
+# Legacy Windows SQLite DLL ZIP (not needed on this server)
+sqlite-dll-win-x64-*.zip
+sqlite-dll-win-x64-*/

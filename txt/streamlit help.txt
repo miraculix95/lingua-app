@@ -1,0 +1,1 @@
+streamlit run franz-lern-streamlit.py -- --language=spanisch

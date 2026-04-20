@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div >
+    <h1 >Chat mit GPT</h1>
+
+    <form 
+        hx-post="http://127.0.0.1:8000/ask" 
+        hx-target="#response"
+        hx-headers='{"Authorization": "Bearer " + localStorage.getItem("token")}'
+    >
+        <input type="text" name="message" placeholder="Frage eingeben">
+        <button type="submit"></button>>Senden (kostet 1 Credit)</button>
+    </form>
+
+    <div id="response" ></div>>Antwort erscheint hier...</div> 
+
+    <button hx-post="http://127.0.0.1:8000/buy_credits">Credits kaufen</button>
+    Deine Credits: <span id="credit-count" hx-get="http://127.0.0.1:8000/credit-count" hx-trigger="refresh"></span>
+    <div >
+
+    <script>
+        document.body.addEventListener("htmx:configRequest", function(event) {
+            let token = localStorage.getItem("token");
+            if (token) {
+                event.detail.headers["Authorization"] = "Bearer " + token;
+            }
+        });
+    </script>
+        
+</body>
+</html>
