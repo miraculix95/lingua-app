@@ -252,6 +252,33 @@ def build_correction_prompt(
     ]
 
 
+def build_dictation_text_prompt(
+    *, language: str, level: str, niveau: str, sentences: int = 3,
+) -> list[dict]:
+    """Ask the LLM to produce a short text in the learning language for dictation."""
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You generate short dictation texts for {language} learners. "
+                f"Output ONLY the text itself — no title, no introduction, no "
+                f"commentary. The text must be in {language}, grammatically correct, "
+                f"natural-sounding, and use punctuation that is audible (commas, "
+                f"periods, question marks). No quotation marks around the whole thing."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Generate a {sentences}-sentence dictation text in {language}. "
+                f"CEFR level: {level}. Register: {niveau}. "
+                f"Make it coherent — a small scene, thought, or micro-story — not "
+                f"disconnected sentences. Keep the overall length under ~60 words."
+            ),
+        },
+    ]
+
+
 def build_answer_comment_prompt(comment: str) -> list[dict]:
     return [
         {"role": "system", "content": "Beantworte die folgende Frage sachlich und präzise."},

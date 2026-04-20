@@ -52,6 +52,7 @@ from src.logging_setup import get_logger  # noqa: E402
 from src.state import init_session_state  # noqa: E402
 from src.tasks import cloze as cloze_task  # noqa: E402
 from src.tasks import conjugation as conj_task  # noqa: E402
+from src.tasks import dictation as dict_task  # noqa: E402
 from src.tasks import error_detection as err_task  # noqa: E402
 from src.tasks import quiz as quiz_task  # noqa: E402
 from src.tasks import sentence_building as sent_task  # noqa: E402
@@ -633,6 +634,8 @@ def main() -> None:
         _render_quiz(client, lang_en, model, ui_lang, display_lang=language_display(language, ui_lang))
     elif task_key == "radio":
         _render_radio(ui_lang)
+    elif task_key == "dictation":
+        _render_dictation(client, lang_en, level, niveau, model, ui_lang)
     elif task_key:
         if st.button(t("new_task_btn", ui_lang), type="primary", use_container_width=True) or not state.task:
             _generate_task(task_key, task_label, client, language, level, niveau, model, ui_lang)
@@ -664,6 +667,77 @@ def _render_quiz(
         st.metric(t("quiz_score", ui_lang), f"{result.correct} / {result.total}")
         for word, ok in result.per_word.items():
             st.write(f"- {word}: {'✅' if ok else '❌'}")
+
+
+def _render_dictation(
+    client: openai.OpenAI, language_en: str, level: str, niveau: str,
+    model: str, ui_lang: str,
+) -> None:
+    """Audio-based dictation task: LLM writes text → ElevenLabs speaks it → user transcribes."""
+    import base64
+
+    import streamlit.components.v1 as components
+
+    state = st.session_state["state"]
+    el_key = os.environ.get("ELEVENLABS_KEY", "").strip()
+    if not el_key:
+        st.warning(t("dict_no_key", ui_lang))
+        return
+
+    if st.button(t("dict_generate", ui_lang), type="primary") or "dictation_bytes" not in st.session_state:
+        try:
+            with st.status(t("dict_status_text", ui_lang), expanded=False) as status:
+                text = dict_task.generate_text(
+                    client, language=language_en, level=level, niveau=niveau,
+                    model=model, sentences=3,
+                )
+                status.update(label=t("dict_status_tts", ui_lang))
+                audio = dict_task.synthesize_speech(text, api_key=el_key)
+                st.session_state["dictation_text"] = text
+                st.session_state["dictation_bytes"] = audio
+                st.session_state["dictation_revealed"] = False
+                state.num_tasks_generated = getattr(state, "num_tasks_generated", 0) + 1
+                status.update(label=t("dict_status_ready", ui_lang), state="complete")
+        except dict_task.TTSUnavailable as exc:
+            st.error(t("dict_tts_error", ui_lang, err=str(exc)))
+            return
+
+    audio_bytes = st.session_state.get("dictation_bytes")
+    if not audio_bytes:
+        return
+
+    # Speed slider + HTML5 audio (native st.audio has no playbackRate).
+    speed = st.select_slider(
+        t("dict_speed", ui_lang), options=[0.5, 0.75, 1.0, 1.25, 1.5], value=1.0, key="dict_speed",
+    )
+    audio_b64 = base64.b64encode(audio_bytes).decode("ascii")
+    player_html = f"""
+    <audio id="dict_player" controls style="width:100%; background:transparent;"
+           src="data:audio/mp3;base64,{audio_b64}"></audio>
+    <script>
+      (function() {{
+        const el = document.getElementById("dict_player");
+        if (el) {{ el.playbackRate = {speed}; }}
+      }})();
+    </script>
+    """
+    components.html(player_html, height=70)
+
+    transcript = st.text_area(
+        t("dict_your_transcript", ui_lang), value="", height=140, key="dict_transcript",
+    )
+
+    if st.button(t("dict_reveal", ui_lang)):
+        st.session_state["dictation_revealed"] = True
+    if st.session_state.get("dictation_revealed"):
+        st.markdown(f"**{t('dict_original', ui_lang)}**")
+        st.info(st.session_state["dictation_text"])
+        if transcript.strip():
+            # Quick char-diff count so learner sees how close they got.
+            orig = st.session_state["dictation_text"].strip()
+            import difflib
+            ratio = difflib.SequenceMatcher(None, orig.lower(), transcript.strip().lower()).ratio()
+            st.metric("🎯", f"{ratio * 100:.1f}%")
 
 
 def _render_radio(ui_lang: str) -> None:
