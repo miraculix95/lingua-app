@@ -69,6 +69,15 @@ from src.vocab import (  # noqa: E402
 log = get_logger(__name__)
 
 
+# Must be the first Streamlit call — sets page-level defaults.
+st.set_page_config(
+    page_title="franz-lern",
+    page_icon="🇫🇷",
+    layout="centered",  # fits mobile + desktop without wide-screen stretching
+    initial_sidebar_state="auto",  # collapsed on phones, expanded on desktop
+)
+
+
 _DARK_CSS = """
 <style>
     /* Outer containers */
@@ -173,8 +182,56 @@ _DARK_CSS = """
 """
 
 
+_MOBILE_CSS = """
+<style>
+    /* ≤ 640px: shrink hero + metrics so first viewport isn't 80% headline */
+    @media (max-width: 640px) {
+        h1 {
+            font-size: 1.6rem !important;
+            line-height: 1.15 !important;
+            margin-bottom: 0.25rem !important;
+        }
+        h2 { font-size: 1.25rem !important; }
+        h3 { font-size: 1.05rem !important; }
+        [data-testid="stMetricValue"] {
+            font-size: 1.5rem !important;
+            line-height: 1.2 !important;
+        }
+        [data-testid="stMetricLabel"] {
+            font-size: 0.8rem !important;
+        }
+        /* Metric grid tweaks — allow wrap if labels don't fit, but tighter gap */
+        [data-testid="stHorizontalBlock"] {
+            gap: 0.25rem !important;
+        }
+        [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+            min-width: 0 !important;
+        }
+        [data-testid="stMetricValue"] {
+            font-size: 1.35rem !important;
+        }
+        [data-testid="stMetricLabel"] p {
+            font-size: 0.72rem !important;
+            white-space: nowrap !important;
+        }
+        /* Main container: tighter padding */
+        .block-container {
+            padding-top: 1rem !important;
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+        }
+        /* Meta-hint caption: smaller font so it fits on 1–2 lines */
+        [data-testid="stCaptionContainer"] {
+            font-size: 0.75rem !important;
+        }
+    }
+</style>
+"""
+
+
 def _apply_theme() -> None:
-    """Inject dark-mode CSS if user toggled it."""
+    """Inject dark-mode + mobile-responsive CSS."""
+    st.markdown(_MOBILE_CSS, unsafe_allow_html=True)
     if st.session_state.get("dark_mode", False):
         st.markdown(_DARK_CSS, unsafe_allow_html=True)
 
