@@ -3,7 +3,8 @@ from tests.fake_openai import FakeOpenAIClient
 
 
 def test_build_quiz_calls_llm_per_word():
-    fake = FakeOpenAIClient(responses=["Haus", "Auto", "Stuhl"])
+    # All responses identical -> order-independent (random.sample shuffles).
+    fake = FakeOpenAIClient(responses=["Haus"])
     quiz = build_quiz(
         fake,
         vocab_list=["maison", "voiture", "chaise"],
@@ -11,7 +12,8 @@ def test_build_quiz_calls_llm_per_word():
         count=3,
         model="gpt-4o-mini",
     )
-    assert quiz == {"maison": "Haus", "voiture": "Auto", "chaise": "Stuhl"}
+    assert set(quiz.keys()) == {"maison", "voiture", "chaise"}
+    assert all(v == "Haus" for v in quiz.values())
     assert len(fake.calls) == 3
 
 
