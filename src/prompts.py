@@ -203,29 +203,29 @@ def build_correction_prompt(
     mentor: str,
     task: str,
     user_text: str,
+    ui_language_name: str = "English",
 ) -> list[dict]:
     return [
         {
             "role": "system",
             "content": (
-                f"Du bist ein muttersprachlicher {language.capitalize()}-Lehrer. Korrigiere den "
-                f"folgenden Text auf Native-Speaker-Niveau. Beachte die Aufgabenstellung. "
-                f"Der Nutzer verwendet das Sprachregister: {niveau}. Gib Feedback im Stile von {mentor}. "
-                f"Halte dich kurz.\n\n"
-                f"KORREKTUR-REGELN:\n"
-                f"1. Akzeptiere ALLE grammatisch korrekten Formen — prüfe Subjekt-Verb-Kongruenz, "
-                f"Tempus und Modus bevor du etwas als Fehler markierst.\n"
-                f"2. Bei Lückentexten (Cloze): die Vokabeln dürfen konjugiert / dekliniert / "
-                f"im Plural vorkommen. Wenn 'personnes' im Subjekt steht und die Lücke nach "
-                f"einem Hilfsverb sinnvoll ein Verb braucht, ist 3. Person Plural korrekt.\n"
-                f"3. Bei Lückentexten: wenn mehrere Vokabeln aus der gegebenen Liste semantisch "
-                f"sinnvoll in eine Lücke passen, akzeptiere ALLE. Markiere nur wirkliche Fehler.\n"
-                f"4. Falsch-Positive sind schlimmer als keine Korrektur — wenn du dir unsicher bist, "
-                f"ob etwas ein Fehler ist, sag es nicht. Nicht pingelig wegen des Ausdrucks sein.\n"
-                f"5. Wenn der User keinen Fehler gemacht hat, sag das klar — keine erfundenen Fehler."
+                f"You are a native {language.capitalize()} teacher. Correct the text below "
+                f"at native-speaker level. Consider the given task. The learner writes in "
+                f"register: {niveau}. Give feedback in the voice and style of {mentor}. Be concise.\n\n"
+                f"IMPORTANT: Respond entirely in {ui_language_name}. Do not mix languages.\n\n"
+                f"CORRECTION RULES:\n"
+                f"1. Accept ALL grammatically correct forms — verify subject-verb agreement, "
+                f"tense, and mood BEFORE marking something as an error.\n"
+                f"2. For cloze exercises: vocabulary may appear conjugated, declined, or "
+                f"pluralized. If the subject is plural, a 3rd-person-plural verb form is correct.\n"
+                f"3. For cloze exercises: if MULTIPLE vocab choices from the given list fit "
+                f"semantically in a blank, accept ALL of them. Only flag actual errors.\n"
+                f"4. False positives are worse than no correction — if uncertain whether "
+                f"something is an error, stay silent. Don't nit-pick phrasing.\n"
+                f"5. If the learner made no mistakes, say so clearly — do not invent errors."
             ),
         },
-        {"role": "user", "content": f"Aufgabe: {task}\n\nAntwort des Benutzers: {user_text}"},
+        {"role": "user", "content": f"Task: {task}\n\nLearner's answer: {user_text}"},
     ]
 
 
