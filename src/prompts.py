@@ -24,6 +24,48 @@ VOCAB_FUNCTION_SPEC: dict = {
 }
 
 
+CLOZE_FUNCTION_SPEC: dict = {
+    "name": "emit_cloze",
+    "description": (
+        "Gibt einen Lückentext strukturiert aus. Lösungen kommen ausschließlich in "
+        "das 'answers'-Feld, NIEMALS in den Body oder Titel."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "string",
+                "description": "Kurzer Titel für den Text (keine Lösungen enthalten).",
+            },
+            "vocab_hints": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": (
+                    "Kurze Bedeutungs-Erklärungen zu jeder Vokabel im Format "
+                    "'wort: kurze Erklärung'."
+                ),
+            },
+            "body": {
+                "type": "string",
+                "description": (
+                    "Der Lückentext. Jede Lücke als '___' (drei Unterstriche) markiert. "
+                    "Enthält KEINE Lösungen, keine Hinweise welches Wort in welche Lücke gehört."
+                ),
+            },
+            "answers": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": (
+                    "Die Lösungs-Wörter in der Reihenfolge der Lücken im Body. "
+                    "Jeder Eintrag genau eine der Ziel-Vokabeln (ggf. konjugiert/dekliniert)."
+                ),
+            },
+        },
+        "required": ["title", "vocab_hints", "body", "answers"],
+    },
+}
+
+
 def build_vocab_extract_prompt(*, language: str, level: str, number: int) -> str:
     return (
         f"Du bist ein Sprachlehrer. Extrahiere genau {number} {language}e Vokabeln "
@@ -44,39 +86,46 @@ def build_vocab_autogen_prompt(*, language: str, level: str, niveau: str) -> str
     )
 
 
-def build_cloze_system_prompt(*, language: str) -> str:
-    return (
-        f"Du bist ein Sprachlehrer. Deine Aufgabe ist es, dem Benutzer bei der "
-        f"Erstellung von Lückentexten in der Sprache {language} zu helfen. Der Text "
-        f"soll Vokabeln enthalten, die im angegebenen Kontext verwendet werden, wobei "
-        f"jedes Wort genau einmal vorkommt. Die Lücken sollen so gesetzt werden, dass "
-        f"der Benutzer sie mit den entsprechenden Vokabeln ausfüllen muss. Die "
-        f"Vokabeln können in ihrer Grundform oder in abgewandelter Form (Plural, "
-        f"Konjugation) vorkommen. Der Text soll dem Sprachlevel des Benutzers "
-        f"entsprechen, das im User-Prompt angegeben ist. Der Text muss ohne die "
-        f"Lösungen (Lücke-Verb-Zuordnung) ausgegeben werden, und ein passender Titel "
-        f"soll hinzugefügt werden. Der Text soll logisch Sinn machen."
-    )
-
-
-def build_cloze_user_prompt(
+def build_cloze_messages(
     *,
     language: str,
     level: str,
     niveau: str,
     selected_vocab: list[str],
     number_trous: int,
-) -> str:
+) -> list[dict]:
+    """Messages für strukturierte Cloze-Generierung via ``emit_cloze`` tool.
+
+    Die Lösungen landen über das Tool-Schema in einem separaten Feld —
+    der ``body``-String enthält ausschließlich ``___``-Platzhalter.
+    """
     joined = ", ".join(selected_vocab)
-    return (
-        f"Erstelle bitte einen Lückentext der {language}en Sprache mit den folgenden "
-        f"Vokabeln: {joined}. Der Text muss auf dem Sprachlevel {level} sein, das "
-        f"folgende Sprachregister treffen: {niveau}, und genau {number_trous} Lücken "
-        f"enthalten. Vor dem eigentlichen Lückentext müssen die Bedeutungen der "
-        f"Vokabeln zwingend jeweils ganz kurz erklärt werden. Jede Lücke soll eine der "
-        f"Vokabeln ersetzen. Gib den Lückentext ohne Lösungen aus und füge einen "
-        f"passenden Titel hinzu."
-    )
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"Du bist ein Sprachlehrer für {language}. Erstelle Lückentexte für "
+                f"Sprachlerner. WICHTIG: nutze das emit_cloze-Tool für strukturierte "
+                f"Ausgabe — Lösungen kommen AUSSCHLIESSLICH ins 'answers'-Feld. "
+                f"Der 'body' enthält nur '___' für Lücken, KEINE Lösungs-Hinweise."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Erstelle einen {language}en Lückentext mit folgenden Vokabeln: "
+                f"{joined}. Sprachlevel: {level}. Sprachregister: {niveau}. "
+                f"Genau {number_trous} Lücken, jede Lücke als '___' markiert. "
+                f"Jede Vokabel genau einmal, in passender grammatischer Form "
+                f"(Konjugation, Plural, etc.). "
+                f"Der Text soll logisch Sinn machen und eine kleine Geschichte oder "
+                f"einen Kontext bilden. Gib dazu einen passenden Titel aus. "
+                f"'vocab_hints': eine kurze deutsche Bedeutungs-Erklärung je Vokabel. "
+                f"'answers': die tatsächlich eingesetzten Wörter in der Reihenfolge "
+                f"der Lücken im Body."
+            ),
+        },
+    ]
 
 
 def build_translation_prompt(

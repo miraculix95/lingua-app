@@ -1,8 +1,8 @@
 from src.prompts import (
+    CLOZE_FUNCTION_SPEC,
     VOCAB_FUNCTION_SPEC,
     build_answer_comment_prompt,
-    build_cloze_system_prompt,
-    build_cloze_user_prompt,
+    build_cloze_messages,
     build_conjugation_prompt,
     build_correction_prompt,
     build_error_detection_prompt,
@@ -26,18 +26,27 @@ def test_vocab_autogen_prompt_includes_niveau():
     assert "Technisch" in p
 
 
-def test_cloze_prompts_include_number_trous():
-    sys = build_cloze_system_prompt(language="französisch")
-    user = build_cloze_user_prompt(
+def test_cloze_messages_contain_vocabs_and_trous():
+    msgs = build_cloze_messages(
         language="französisch",
         level="B2",
         niveau="Standardsprache",
         selected_vocab=["maison", "voiture"],
         number_trous=4,
     )
-    assert "Lückentext" in sys or "Lücken" in sys
-    assert "4" in user
-    assert "maison" in user
+    combined = " ".join(m["content"] for m in msgs)
+    assert "maison" in combined
+    assert "voiture" in combined
+    assert "4" in combined
+    assert "emit_cloze" in combined  # tool is mentioned by name in system prompt
+
+
+def test_cloze_function_spec_has_answers_separate():
+    # Answers live in their own field so they can't leak into body.
+    props = CLOZE_FUNCTION_SPEC["parameters"]["properties"]
+    assert "body" in props
+    assert "answers" in props
+    assert "title" in props
 
 
 def test_translation_prompt_includes_sentences_count():
