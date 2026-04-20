@@ -38,6 +38,32 @@ MENTORS: list[str] = [
     "Machiavelli",
 ]
 
+MENTOR_AVATARS: dict[str, str] = {
+    "Netter Lehrer": "🎓",
+    "Strenger Lehrer": "📏",
+    "Dalai Lama": "🧘",
+    "Vitalik Buterin": "⛓️",
+    "Elon Musk": "🚀",
+    "Jesus Christus": "✝️",
+    "Chairman Mao": "🌾",
+    "Homer": "📜",
+    "Konfuzius": "🏯",
+    "Machiavelli": "🗡️",
+}
+
+MENTOR_QUOTES: dict[str, str] = {
+    "Netter Lehrer": "Jeder Fehler ist ein Schritt nach vorne.",
+    "Strenger Lehrer": "Präzision ist die Höflichkeit der Könige.",
+    "Dalai Lama": "Be kind whenever possible. It is always possible.",
+    "Vitalik Buterin": "Decentralization of power; centralization of knowledge.",
+    "Elon Musk": "When something is important enough, you do it even if the odds are not in your favor.",
+    "Jesus Christus": "Der Buchstabe tötet, der Geist macht lebendig.",
+    "Chairman Mao": "Eine Reise von tausend Meilen beginnt mit dem ersten Schritt.",
+    "Homer": "Even in sleep, sorrow descends upon our souls.",
+    "Konfuzius": "Lernen ohne Nachdenken ist vergeblich; Nachdenken ohne Lernen ist gefährlich.",
+    "Machiavelli": "Fortune favors the bold.",
+}
+
 THEMES: list[str] = [
     "Urlaub",
     "Schule",
