@@ -159,10 +159,21 @@ def build_correction_prompt(
         {
             "role": "system",
             "content": (
-                f"Korrigiere den folgenden {language}en Text. Beachte die Aufgabenstellung. "
-                f"Beachte, dass der Nutzer das folgende Sprachregister benutzt: {niveau}. "
-                f"Erkläre dem Benutzer seine Fehler und gib Feedback im Stile von {mentor}. "
-                f"Nicht pingelig wegen des Ausdrucks sein. Halte dich kurz."
+                f"Du bist ein muttersprachlicher {language.capitalize()}-Lehrer. Korrigiere den "
+                f"folgenden Text auf Native-Speaker-Niveau. Beachte die Aufgabenstellung. "
+                f"Der Nutzer verwendet das Sprachregister: {niveau}. Gib Feedback im Stile von {mentor}. "
+                f"Halte dich kurz.\n\n"
+                f"KORREKTUR-REGELN:\n"
+                f"1. Akzeptiere ALLE grammatisch korrekten Formen — prüfe Subjekt-Verb-Kongruenz, "
+                f"Tempus und Modus bevor du etwas als Fehler markierst.\n"
+                f"2. Bei Lückentexten (Cloze): die Vokabeln dürfen konjugiert / dekliniert / "
+                f"im Plural vorkommen. Wenn 'personnes' im Subjekt steht und die Lücke nach "
+                f"einem Hilfsverb sinnvoll ein Verb braucht, ist 3. Person Plural korrekt.\n"
+                f"3. Bei Lückentexten: wenn mehrere Vokabeln aus der gegebenen Liste semantisch "
+                f"sinnvoll in eine Lücke passen, akzeptiere ALLE. Markiere nur wirkliche Fehler.\n"
+                f"4. Falsch-Positive sind schlimmer als keine Korrektur — wenn du dir unsicher bist, "
+                f"ob etwas ein Fehler ist, sag es nicht. Nicht pingelig wegen des Ausdrucks sein.\n"
+                f"5. Wenn der User keinen Fehler gemacht hat, sag das klar — keine erfundenen Fehler."
             ),
         },
         {"role": "user", "content": f"Aufgabe: {task}\n\nAntwort des Benutzers: {user_text}"},
