@@ -325,6 +325,194 @@ def build_dictation_text_prompt(
     ]
 
 
+READING_QUESTIONS_FUNCTION_SPEC: dict = {
+    "name": "emit_reading_questions",
+    "description": (
+        "Emits structured reading-comprehension questions for a given text: "
+        "multiple-choice + open-ended, with reference answers kept separate "
+        "from the text shown to the learner."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "multiple_choice": {
+                "type": "array",
+                "description": "Multiple-choice questions, exactly one correct option each.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "question": {"type": "string"},
+                        "kind": {
+                            "type": "string",
+                            "description": (
+                                "One of: 'fact' (explicit detail), 'inference' (implicit), "
+                                "'vocabulary' (word-in-context), 'intent' (author tone/purpose)."
+                            ),
+                        },
+                        "options": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Exactly 4 options.",
+                        },
+                        "correct_index": {
+                            "type": "integer",
+                            "description": "0-based index of the correct option (0..3).",
+                        },
+                        "rationale": {
+                            "type": "string",
+                            "description": "One sentence explaining why the correct answer is right.",
+                        },
+                    },
+                    "required": ["question", "kind", "options", "correct_index", "rationale"],
+                },
+            },
+            "open_questions": {
+                "type": "array",
+                "description": "Open-ended questions with a reference answer used for LLM grading.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "question": {"type": "string"},
+                        "kind": {"type": "string"},
+                        "reference_answer": {
+                            "type": "string",
+                            "description": "A concise model answer used as grading reference.",
+                        },
+                    },
+                    "required": ["question", "kind", "reference_answer"],
+                },
+            },
+        },
+        "required": ["multiple_choice", "open_questions"],
+    },
+}
+
+
+def build_reading_text_prompt(
+    *,
+    language: str,
+    level: str,
+    niveau: str,
+    theme: str,
+    word_target: int,
+) -> list[dict]:
+    """Ask the LLM to produce a reading-comprehension passage.
+
+    The passage is the *only* thing returned — no title, no questions. Questions
+    are generated in a separate call so the two can be cached/regenerated
+    independently and the tool-call payloads stay small.
+    """
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You write reading-comprehension passages for {language} learners. "
+                f"Output ONLY the passage itself — no title, no headline, no meta-"
+                f"commentary, no questions. The text must be in {language}, "
+                f"grammatically correct, natural and coherent (not a list of "
+                f"disconnected sentences)."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Write a coherent {language} reading passage of roughly "
+                f"{word_target} words. CEFR level: {level}. Register: {niveau}. "
+                f"Theme: {theme}. Vary sentence structure so the text is "
+                f"genuinely readable prose. Use punctuation normally. No "
+                f"bullet lists, no headings, no inline comprehension questions."
+            ),
+        },
+    ]
+
+
+def build_reading_questions_messages(
+    *,
+    text: str,
+    language: str,
+    ui_language_name: str,
+    num_mc: int = 5,
+    num_open: int = 3,
+) -> list[dict]:
+    """Messages to produce MC + open-ended questions via the emit_reading_questions tool.
+
+    Questions are phrased in the UI language so the learner reads the
+    instructions comfortably; the passage itself stays in the learning language.
+    """
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You are a {language} reading-comprehension examiner. Produce "
+                f"high-quality questions that mix cognitive levels:\n"
+                f"- explicit facts from the text\n"
+                f"- inferences the text supports but does not state\n"
+                f"- vocabulary-in-context (what a word/expression means here)\n"
+                f"- author intent or tone\n\n"
+                f"IMPORTANT: use the emit_reading_questions tool for structured "
+                f"output. Distractors in multiple-choice items must be plausible "
+                f"but clearly wrong — no trick questions, no two-valid-answers.\n\n"
+                f"LANGUAGE RULE: write the questions, options, and reference "
+                f"answers in {ui_language_name}. The text itself stays in "
+                f"{language} and is not rewritten."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Here is the {language} passage:\n\n---\n{text}\n---\n\n"
+                f"Generate exactly {num_mc} multiple-choice questions and "
+                f"{num_open} open-ended questions about this passage. "
+                f"Across the {num_mc + num_open} items cover at least three of "
+                f"the four cognitive kinds (fact / inference / vocabulary / "
+                f"intent). For each MC question provide exactly 4 options and "
+                f"a 0-based correct_index. For each open question provide a "
+                f"concise reference_answer used for grading."
+            ),
+        },
+    ]
+
+
+def build_reading_eval_prompt(
+    *,
+    text: str,
+    question: str,
+    reference_answer: str,
+    user_answer: str,
+    language: str,
+    ui_language_name: str,
+) -> list[dict]:
+    """Grade a single open-ended reading answer against the reference.
+
+    Returns model output shaped as short feedback plus a verdict word at the
+    top (``CORRECT`` / ``PARTIAL`` / ``INCORRECT``) so the caller can parse
+    coarse scoring without another LLM call.
+    """
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You grade reading-comprehension answers for a {language} "
+                f"passage. Be strict on substance, lenient on phrasing. "
+                f"Respond in {ui_language_name}.\n\n"
+                f"FORMAT — first line MUST be exactly one of: "
+                f"CORRECT / PARTIAL / INCORRECT\n"
+                f"Second line onward: one or two sentences explaining the "
+                f"verdict and, if not CORRECT, what the learner missed."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Passage:\n---\n{text}\n---\n\n"
+                f"Question: {question}\n\n"
+                f"Reference answer: {reference_answer}\n\n"
+                f"Learner's answer: {user_answer}"
+            ),
+        },
+    ]
+
+
 def build_answer_comment_prompt(comment: str) -> list[dict]:
     return [
         {"role": "system", "content": "Beantworte die folgende Frage sachlich und präzise."},
