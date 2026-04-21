@@ -178,7 +178,19 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "metric_tasks": "📚 Tasks",
         "metric_corrections": "✏️ Corrections",
         "metric_runs": "🔄 Session runs",
-        "choose_exercise": "🎯 Choose exercise",
+        "choose_exercise": "🎯 Choose exercise type",
+        "practice_intro": "Pick an exercise type below. Each is a different way to practise with your vocabulary — focus on one or go through all of them.",
+        "types_overview_title": "📖 What are the exercise types?",
+        "desc_writing": "📝 **Free writing.** You get a theme and write a short text in the learning language. The coach corrects grammar, vocabulary and style — in the register you picked.",
+        "desc_cloze": "📖 **Cloze text (fill in the blanks).** The LLM builds a short text with blanks. You type the missing words; the coach checks them.",
+        "desc_translation": "🔁 **Translate sentences.** A handful of sentences to translate — either into or out of the learning language, your pick.",
+        "desc_quiz": "🎲 **Vocabulary quiz.** Flashcard-style: you get the translation, you type the word. Fuzzy matching tolerates small typos.",
+        "desc_sentence": "🧩 **Sentence building.** A few vocabs are given — you build a sentence that uses them naturally.",
+        "desc_error": "🔍 **Error detection.** The LLM writes a few sentences that contain grammar or spelling mistakes. You find and fix them.",
+        "desc_synonym": "🔤 **Synonyms & antonyms.** A word is given — you produce synonyms and antonyms in the learning language.",
+        "desc_conjugation": "🔠 **Verb conjugation.** A verb + a person is given — you conjugate it across several tenses.",
+        "desc_dictation": "🎙️ **Audio dictation.** The LLM writes a short text, ElevenLabs reads it, you transcribe. Playback-speed slider lets you slow the voice down.",
+        "desc_reading": "📚 **Reading comprehension.** AI-generated text, a URL, pasted text, or an uploaded .txt — then multiple-choice + open-ended questions about it.",
         "new_task_btn": "🎯 New task",
         "correct_btn": "📝 Correct text",
         "task_heading": "Task",
@@ -240,26 +252,32 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav_about": "About",
         "about_title": "ℹ️ About lingua",
         "about_body": (
-            "**lingua** is an AI-powered language tutor built for practising at C1-level "
-            "with register-aware corrections (slang → literary → technical) and mentor personas "
-            "that change the voice of the feedback.\n\n"
-            "### What's different\n"
-            "- **Seven registers**, not just 'formal vs. casual' — the LLM matches corrections to "
-            "the register you're writing in.\n"
+            "**lingua-app** is an AI-powered language tutor built for practising up to C1/C2 level, "
+            "with register-aware corrections and mentor personas that change the voice of the feedback.\n\n"
+            "### Highlights\n"
+            "What sets lingua-app apart from mass-market language apps (Duolingo, Babbel, Busuu):\n\n"
+            "- **Seven language registers**, not just 'formal vs. casual' — the LLM matches corrections "
+            "to the register you're writing in (criminal slang · vulgar · colloquial · standard · "
+            "formal · literary · technical).\n"
             "- **Ten mentor personas** — from Kind Teacher to Machiavelli. The stylistic contrast "
             "makes errors memorable.\n"
-            "- **Ten exercise types** — writing, cloze, translation (both directions), sentence "
-            "building, error detection, synonyms/antonyms, conjugation, quiz, and audio dictation "
-            "with a playback-speed slider.\n"
+            "- **Ten exercise types** — writing, cloze, translation (both directions), sentence building, "
+            "error detection, synonyms/antonyms, verb conjugation, vocabulary quiz, audio dictation "
+            "(ElevenLabs, with playback-speed slider), and reading comprehension "
+            "(AI-generated / URL / paste / TXT → MC + open-ended questions).\n"
             "- **BYOK (Bring Your Own Key)** — your OpenRouter and ElevenLabs keys stay in your "
-            "browser session. Never stored, never logged.\n"
+            "browser session. Never stored, never logged. Beta testers can leave the field empty — "
+            "the server key is used instead.\n"
             "- **Seven learning languages** — French, English, Spanish, Ukrainian, German, Polish, Hebrew.\n"
-            "- **Four UI languages** — English, German, French, Spanish, with IP-based auto-detection.\n\n"
+            "- **Seven UI languages** — English, German, French, Spanish, Ukrainian, Polish, Hebrew, "
+            "with IP-based auto-detection on first visit.\n\n"
             "### Author\n"
-            "Built by **Bastian** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
-            "a Munich-based freelance AI/Python developer. Originally written in early 2025 as a "
-            "personal tool for French C1 practice; refactored in 2026 into this modular, tested, "
-            "multilingual release.\n\n"
+            "Built by **Bastian Brand** ([Website](https://www.bastian-brand.com/) · "
+            "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
+            "Munich-based independent consultant in data analytics, finance and AI automation, McKinsey alumnus, "
+            "working with private-equity, travel, insurance and automotive clients across Europe. "
+            "lingua-app was originally written in early 2025 as a personal tool for French C1 practice; "
+            "refactored in 2026 into this modular, tested, multilingual release.\n\n"
             "### Source code\n"
             "[lingua-app on GitHub](https://github.com/miraculix95/lingua-app) — open source under MIT. Issues, PRs, and feedback welcome."
         ),
@@ -282,6 +300,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "el_source_env": "🎙️ Voice: server .env ElevenLabs",
         "sidebar_heading": "⚙️ Configuration",
         "main_heading": "🎯 Practice area",
+        "home_btn": "🔄 Reset",
+        "help_home": "Clear the current task and return to the exercise picker. Your language, level, register, vocabulary and keys stay.",
         "how_it_works": "👈 **Step 1 — Sidebar:** set your coach, level, register, vocabulary source and API key. **Step 2 — here:** pick an exercise below and click **New task**.",
         "help_ui_language": "Language of buttons, labels and feedback.",
         "help_learning_language": "The language you want to practise. Switch any time — vocabulary resets on change.",
@@ -292,7 +312,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_url": "Paste a news/article URL — the app extracts vocabulary from it.",
         "help_ready_vocab": "Upload a plain-text file with one vocabulary item per line.",
         "help_model_tier": "Budget is the cheapest; Best is most accurate. Non-English languages auto-use a stronger default.",
-        "help_choose_exercise": "Each exercise uses the same vocabulary and settings from the sidebar.",
+        "help_choose_exercise": "Pick what kind of practice you want next. Each option is a different way to work with your vocabulary — fill-in-the-blanks, translate sentences, listen to a dictation, read a text and answer questions, and more. Switch any time.",
         "help_new_task": "Re-roll a fresh task with the current settings.",
         "help_correct": "Send your answer to the coach for correction.",
         "help_num_blanks": "How many cloze blanks to produce.",
@@ -364,7 +384,19 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "metric_tasks": "📚 Aufgaben",
         "metric_corrections": "✏️ Korrekturen",
         "metric_runs": "🔄 Session-Runs",
-        "choose_exercise": "🎯 Übung wählen",
+        "choose_exercise": "🎯 Übungstyp wählen",
+        "practice_intro": "Wähle unten einen Übungstyp. Jeder Typ ist eine andere Art, mit deinen Vokabeln zu üben — konzentrier dich auf einen oder arbeite sie der Reihe nach durch.",
+        "types_overview_title": "📖 Was sind die Übungstypen?",
+        "desc_writing": "📝 **Freies Schreiben.** Du bekommst ein Thema und schreibst einen kurzen Text in der Lernsprache. Der Coach korrigiert Grammatik, Wortschatz und Stil — im gewählten Register.",
+        "desc_cloze": "📖 **Lückentext.** Das LLM baut einen kurzen Text mit Lücken. Du tippst die fehlenden Wörter; der Coach prüft sie.",
+        "desc_translation": "🔁 **Sätze übersetzen.** Ein paar Sätze zum Übersetzen — wahlweise in oder aus der Lernsprache.",
+        "desc_quiz": "🎲 **Vokabel-Quiz.** Flashcard-Stil: du siehst die Übersetzung, tippst das Wort. Tippfehler-tolerant.",
+        "desc_sentence": "🧩 **Satz bauen.** Ein paar Vokabeln sind vorgegeben — du baust einen Satz, der sie natürlich benutzt.",
+        "desc_error": "🔍 **Fehler finden.** Das LLM schreibt ein paar Sätze mit Grammatik- oder Rechtschreibfehlern. Du findest und korrigierst sie.",
+        "desc_synonym": "🔤 **Synonyme & Antonyme.** Ein Wort ist vorgegeben — du nennst Synonyme und Antonyme in der Lernsprache.",
+        "desc_conjugation": "🔠 **Verbkonjugation.** Ein Verb + eine Person sind vorgegeben — du konjugierst es in mehreren Zeiten.",
+        "desc_dictation": "🎙️ **Audio-Diktat.** Das LLM schreibt einen kurzen Text, ElevenLabs liest ihn vor, du schreibst mit. Geschwindigkeits-Slider zum Verlangsamen.",
+        "desc_reading": "📚 **Leseverstehen.** KI-generierter Text, URL, eingefügter Text oder hochgeladene .txt — danach Multiple-Choice- und offene Fragen dazu.",
         "new_task_btn": "🎯 Neue Aufgabe",
         "correct_btn": "📝 Text korrigieren",
         "task_heading": "Aufgabe",
@@ -426,26 +458,32 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav_about": "Über",
         "about_title": "ℹ️ Über lingua",
         "about_body": (
-            "**lingua** ist ein KI-Sprachtutor für C1-Praxis mit registerbewusster Korrektur "
-            "(Gossensprache → Literatur → Technisch) und Mentor-Personas, die die Stimme des "
-            "Feedbacks ändern.\n\n"
-            "### Was anders ist\n"
-            "- **Sieben Register**, nicht nur 'formell vs. locker' — das LLM passt die Korrektur "
-            "dem Register an, in dem du schreibst.\n"
+            "**lingua-app** ist ein KI-Sprachtutor für Praxis bis C1/C2-Niveau, mit registerbewusster "
+            "Korrektur und Mentor-Personas, die die Stimme des Feedbacks ändern.\n\n"
+            "### Besonderheiten\n"
+            "Was lingua-app von Massenmarkt-Sprach­apps (Duolingo, Babbel, Busuu) unterscheidet:\n\n"
+            "- **Sieben Sprachregister**, nicht nur 'formell vs. locker' — das LLM passt die Korrektur "
+            "dem Register an, in dem du schreibst (Gossensprache · vulgär · umgangssprachlich · "
+            "Standard · formell · literarisch · technisch).\n"
             "- **Zehn Mentor-Personas** — von Netter Lehrer bis Machiavelli. Der Stilkontrast "
             "macht Fehler unvergesslich.\n"
             "- **Zehn Übungstypen** — Schreiben, Lückentext, Übersetzung (beide Richtungen), "
-            "Satzbau, Fehlersuche, Synonyme/Antonyme, Konjugation, Quiz und Audio-Diktat mit "
-            "Geschwindigkeits-Slider.\n"
+            "Satzbau, Fehlersuche, Synonyme/Antonyme, Verbkonjugation, Vokabel-Quiz, Audio-Diktat "
+            "(ElevenLabs, mit Geschwindigkeits-Slider) und Leseverstehen "
+            "(KI-generiert / URL / einfügen / TXT → Multiple-Choice + offene Fragen).\n"
             "- **BYOK (Bring Your Own Key)** — OpenRouter- und ElevenLabs-Keys bleiben in deiner "
-            "Browser-Session. Nichts wird gespeichert oder geloggt.\n"
+            "Browser-Session. Nichts wird gespeichert oder geloggt. Beta-Tester können das Feld leer "
+            "lassen — dann wird der Server-Key genutzt.\n"
             "- **Sieben Lernsprachen** — Französisch, Englisch, Spanisch, Ukrainisch, Deutsch, Polnisch, Hebräisch.\n"
-            "- **Vier UI-Sprachen** — Englisch, Deutsch, Französisch, Spanisch, mit IP-basierter Auto-Erkennung.\n\n"
+            "- **Sieben UI-Sprachen** — Englisch, Deutsch, Französisch, Spanisch, Ukrainisch, Polnisch, "
+            "Hebräisch, mit IP-basierter Auto-Erkennung beim ersten Besuch.\n\n"
             "### Autor\n"
-            "Gebaut von **Bastian** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
-            "freiberuflicher KI/Python-Entwickler in München. Urspünglich Anfang 2025 als "
-            "persönliches Tool für Französisch-C1 geschrieben; 2026 als modulares, getestetes, "
-            "mehrsprachiges Release refactored.\n\n"
+            "Gebaut von **Bastian Brand** ([Website](https://www.bastian-brand.com/) · "
+            "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
+            "freiberuflicher Consultant aus München für Datenanalyse, Finanzen und KI-Automatisierung, McKinsey-Alumnus, "
+            "mit Kunden aus Private Equity, Reise, Versicherung und Automobilindustrie in ganz Europa. "
+            "lingua-app entstand Anfang 2025 als persönliches Tool für Französisch-C1-Praxis; 2026 als modulares, "
+            "getestetes, mehrsprachiges Release refactored.\n\n"
             "### Quellcode\n"
             "[lingua-app auf GitHub](https://github.com/miraculix95/lingua-app) — Open Source unter MIT-Lizenz. Issues, PRs und Feedback willkommen."
         ),
@@ -468,6 +506,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "el_source_env": "🎙️ Stimme: Server .env ElevenLabs",
         "sidebar_heading": "⚙️ Konfiguration",
         "main_heading": "🎯 Übungsbereich",
+        "home_btn": "🔄 Zurücksetzen",
+        "help_home": "Aktuelle Aufgabe verwerfen und zurück zur Übungsauswahl. Sprache, Niveau, Register, Vokabeln und Keys bleiben.",
         "how_it_works": "👈 **Schritt 1 — Sidebar:** Coach, Niveau, Register, Vokabelquelle und API-Key einstellen. **Schritt 2 — hier:** Übung auswählen und **Neue Aufgabe** klicken.",
         "help_ui_language": "Sprache der Buttons, Labels und Korrekturen.",
         "help_learning_language": "Die Sprache, die du üben willst. Jederzeit umschaltbar — Vokabeln werden beim Wechsel geleert.",
@@ -478,7 +518,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_url": "Füge eine Artikel-URL ein — die App extrahiert daraus Vokabeln.",
         "help_ready_vocab": "Textdatei mit einer Vokabel pro Zeile hochladen.",
         "help_model_tier": "Budget ist am günstigsten, Best am genauesten. Für nicht-englische Sprachen ist der Default stärker voreingestellt.",
-        "help_choose_exercise": "Alle Übungen nutzen dieselbe Vokabelliste und Sidebar-Einstellungen.",
+        "help_choose_exercise": "Wähle, welche Art von Übung du als Nächstes machen willst. Jede Option ist eine andere Art, mit deinen Vokabeln zu arbeiten — Lücken füllen, Sätze übersetzen, Diktat anhören, einen Text lesen und Fragen beantworten, usw. Jederzeit wechselbar.",
         "help_new_task": "Eine neue Aufgabe mit den aktuellen Einstellungen würfeln.",
         "help_correct": "Antwort an den Coach zur Korrektur schicken.",
         "help_num_blanks": "Wie viele Lücken der Text haben soll.",
@@ -550,7 +590,19 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "metric_tasks": "📚 Exercices",
         "metric_corrections": "✏️ Corrections",
         "metric_runs": "🔄 Sessions",
-        "choose_exercise": "🎯 Choisir un exercice",
+        "choose_exercise": "🎯 Choisir un type d'exercice",
+        "practice_intro": "Choisis un type d'exercice ci-dessous. Chaque type est une manière différente de pratiquer ton vocabulaire — concentre-toi sur un ou fais-les tous.",
+        "types_overview_title": "📖 Quels sont les types d'exercices ?",
+        "desc_writing": "📝 **Rédaction libre.** Tu reçois un thème et écris un court texte dans la langue cible. Le coach corrige la grammaire, le vocabulaire et le style — dans le registre choisi.",
+        "desc_cloze": "📖 **Texte à trous.** Le LLM construit un court texte avec des trous. Tu tapes les mots manquants ; le coach vérifie.",
+        "desc_translation": "🔁 **Traduire des phrases.** Quelques phrases à traduire — au choix vers ou depuis la langue cible.",
+        "desc_quiz": "🎲 **Quiz de vocabulaire.** Style flashcards : tu vois la traduction, tu tapes le mot. Tolère les petites fautes de frappe.",
+        "desc_sentence": "🧩 **Construction de phrase.** Quelques mots te sont donnés — tu construis une phrase qui les utilise naturellement.",
+        "desc_error": "🔍 **Détection d'erreurs.** Le LLM écrit quelques phrases contenant des fautes de grammaire ou d'orthographe. Tu les trouves et tu les corriges.",
+        "desc_synonym": "🔤 **Synonymes et antonymes.** Un mot est donné — tu produis synonymes et antonymes dans la langue cible.",
+        "desc_conjugation": "🔠 **Conjugaison.** Un verbe + une personne sont donnés — tu le conjugues sur plusieurs temps.",
+        "desc_dictation": "🎙️ **Dictée audio.** Le LLM écrit un court texte, ElevenLabs le lit, tu transcris. Curseur de vitesse pour ralentir la voix.",
+        "desc_reading": "📚 **Compréhension écrite.** Texte généré par IA, URL, texte collé ou .txt importé — puis QCM + questions ouvertes.",
         "new_task_btn": "🎯 Nouvel exercice",
         "correct_btn": "📝 Corriger le texte",
         "task_heading": "Exercice",
@@ -612,26 +664,33 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav_about": "À propos",
         "about_title": "ℹ️ À propos de lingua",
         "about_body": (
-            "**lingua** est un tuteur de langue basé sur l'IA, pensé pour s'entraîner au niveau C1 "
-            "avec des corrections sensibles au registre (argot → littéraire → technique) et des "
-            "personas de mentor qui changent la voix du feedback.\n\n"
-            "### Ce qui est différent\n"
-            "- **Sept registres**, pas seulement 'soutenu vs. familier' — le LLM adapte la correction "
-            "au registre dans lequel tu écris.\n"
+            "**lingua-app** est un tuteur de langue basé sur l'IA, pensé pour s'entraîner jusqu'au "
+            "niveau C1/C2, avec des corrections sensibles au registre de langue et des personas de "
+            "mentor qui changent la voix du feedback.\n\n"
+            "### Points forts\n"
+            "Ce qui distingue lingua-app des applis grand public (Duolingo, Babbel, Busuu) :\n\n"
+            "- **Sept registres de langue**, pas seulement 'soutenu vs. familier' — le LLM adapte "
+            "la correction au registre dans lequel tu écris (argot · vulgaire · familier · courant · "
+            "soutenu · littéraire · technique).\n"
             "- **Dix personas de mentor** — du Professeur sympathique à Machiavel. Le contraste "
             "stylistique rend les erreurs mémorables.\n"
             "- **Dix types d'exercices** — rédaction, texte à trous, traduction (dans les deux sens), "
-            "construction de phrase, détection d'erreurs, synonymes/antonymes, conjugaison, quiz et "
-            "dictée audio avec curseur de vitesse.\n"
+            "construction de phrase, détection d'erreurs, synonymes/antonymes, conjugaison des verbes, "
+            "quiz de vocabulaire, dictée audio (ElevenLabs, avec curseur de vitesse), et compréhension "
+            "écrite (généré par IA / URL / texte collé / TXT → QCM + questions ouvertes).\n"
             "- **BYOK (Bring Your Own Key)** — tes clés OpenRouter et ElevenLabs restent dans ta "
-            "session navigateur. Jamais stockées, jamais journalisées.\n"
+            "session navigateur. Jamais stockées, jamais journalisées. Les beta-testeurs peuvent "
+            "laisser vide — la clé du serveur sera utilisée.\n"
             "- **Sept langues à apprendre** — français, anglais, espagnol, ukrainien, allemand, polonais, hébreu.\n"
-            "- **Quatre langues d'interface** — anglais, allemand, français, espagnol, avec détection automatique par IP.\n\n"
+            "- **Sept langues d'interface** — anglais, allemand, français, espagnol, ukrainien, "
+            "polonais, hébreu, avec détection automatique par IP à la première visite.\n\n"
             "### Auteur\n"
-            "Créé par **Bastian** ([GitHub : miraculix95](https://github.com/miraculix95)), "
-            "développeur IA/Python indépendant basé à Munich. Écrit initialement début 2025 comme "
-            "outil personnel pour s'entraîner en français C1 ; refactoré en 2026 en une version "
-            "modulaire, testée et multilingue.\n\n"
+            "Créé par **Bastian Brand** ([Site](https://www.bastian-brand.com/) · "
+            "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
+            "consultant freelance basé à Munich en analyse de données, finance et automatisation IA, ancien de McKinsey, "
+            "intervenant pour des clients du private equity, du tourisme, de l'assurance et de l'automobile dans toute l'Europe. "
+            "lingua-app a été écrit initialement début 2025 comme outil personnel pour s'entraîner en français C1 ; "
+            "refactoré en 2026 en une version modulaire, testée et multilingue.\n\n"
             "### Code source\n"
             "[lingua-app sur GitHub](https://github.com/miraculix95/lingua-app) — open source sous licence MIT. Issues, PRs et retours bienvenus."
         ),
@@ -654,6 +713,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "el_source_env": "🎙️ Voix : .env serveur ElevenLabs",
         "sidebar_heading": "⚙️ Configuration",
         "main_heading": "🎯 Espace d'exercices",
+        "home_btn": "🔄 Réinitialiser",
+        "help_home": "Efface la tâche en cours et retourne au choix d'exercice. Langue, niveau, registre, vocabulaire et clés sont conservés.",
         "how_it_works": "👈 **Étape 1 — barre latérale :** choisis coach, niveau, registre, source de vocabulaire et clé API. **Étape 2 — ici :** choisis un exercice ci-dessous et clique sur **Nouvelle tâche**.",
         "help_ui_language": "Langue des boutons, libellés et corrections.",
         "help_learning_language": "La langue que tu veux pratiquer. Modifiable à tout moment — le vocabulaire est réinitialisé.",
@@ -664,7 +725,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_url": "Colle une URL d'article — l'app en extrait le vocabulaire.",
         "help_ready_vocab": "Un fichier texte, un mot par ligne.",
         "help_model_tier": "Budget = le moins cher ; Best = le plus précis. Pour les langues non-anglaises, un modèle plus fort est sélectionné par défaut.",
-        "help_choose_exercise": "Chaque exercice utilise le même vocabulaire et les réglages de la barre latérale.",
+        "help_choose_exercise": "Choisis le type d'exercice à faire maintenant. Chaque option est une manière différente de travailler ton vocabulaire — texte à trous, traduire des phrases, écouter une dictée, lire un texte et répondre aux questions, etc. Changeable à tout moment.",
         "help_new_task": "Regénérer une tâche avec les réglages actuels.",
         "help_correct": "Envoyer ta réponse au coach pour correction.",
         "help_num_blanks": "Combien de trous dans le texte.",
@@ -736,7 +797,19 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "metric_tasks": "📚 Ejercicios",
         "metric_corrections": "✏️ Correcciones",
         "metric_runs": "🔄 Sesiones",
-        "choose_exercise": "🎯 Elegir ejercicio",
+        "choose_exercise": "🎯 Elegir tipo de ejercicio",
+        "practice_intro": "Elige un tipo de ejercicio abajo. Cada tipo es una forma distinta de practicar tu vocabulario — concéntrate en uno o hazlos todos.",
+        "types_overview_title": "📖 ¿Qué tipos de ejercicio hay?",
+        "desc_writing": "📝 **Redacción libre.** Recibes un tema y escribes un texto corto en el idioma que estudias. El coach corrige gramática, vocabulario y estilo — en el registro que elegiste.",
+        "desc_cloze": "📖 **Texto con huecos.** El LLM crea un texto corto con huecos. Tú tecleas las palabras que faltan; el coach las revisa.",
+        "desc_translation": "🔁 **Traducir frases.** Unas cuantas frases para traducir — al idioma que estudias o desde él, tú eliges.",
+        "desc_quiz": "🎲 **Quiz de vocabulario.** Estilo tarjetas: ves la traducción, escribes la palabra. Tolera pequeños errores de tipeo.",
+        "desc_sentence": "🧩 **Construir una frase.** Se te dan unas palabras — construyes una frase que las usa de forma natural.",
+        "desc_error": "🔍 **Detectar errores.** El LLM escribe frases con errores de gramática u ortografía. Tú los encuentras y los corriges.",
+        "desc_synonym": "🔤 **Sinónimos y antónimos.** Se te da una palabra — produces sinónimos y antónimos en el idioma que estudias.",
+        "desc_conjugation": "🔠 **Conjugación de verbos.** Un verbo + una persona — lo conjugas en varios tiempos.",
+        "desc_dictation": "🎙️ **Dictado audio.** El LLM escribe un texto corto, ElevenLabs lo lee, tú lo transcribes. Control de velocidad para ralentizar la voz.",
+        "desc_reading": "📚 **Comprensión lectora.** Texto generado por IA, URL, texto pegado o .txt subido — luego opción múltiple + preguntas abiertas.",
         "new_task_btn": "🎯 Nuevo ejercicio",
         "correct_btn": "📝 Corregir texto",
         "task_heading": "Ejercicio",
@@ -798,26 +871,33 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav_about": "Acerca de",
         "about_title": "ℹ️ Acerca de lingua",
         "about_body": (
-            "**lingua** es un tutor de idiomas con IA pensado para practicar a nivel C1, "
-            "con correcciones sensibles al registro (argot → literario → técnico) y personas "
-            "de mentor que cambian la voz del feedback.\n\n"
-            "### Qué lo diferencia\n"
-            "- **Siete registros**, no solo 'formal vs. informal' — el LLM ajusta la corrección "
-            "al registro en el que estás escribiendo.\n"
+            "**lingua-app** es un tutor de idiomas con IA pensado para practicar hasta nivel C1/C2, "
+            "con correcciones sensibles al registro de lengua y personas de mentor que cambian la "
+            "voz del feedback.\n\n"
+            "### Lo destacado\n"
+            "Qué diferencia a lingua-app de las apps de idiomas más populares (Duolingo, Babbel, Busuu):\n\n"
+            "- **Siete registros de lengua**, no solo 'formal vs. informal' — el LLM ajusta la "
+            "corrección al registro en el que estás escribiendo (argot · vulgar · coloquial · "
+            "estándar · formal · literario · técnico).\n"
             "- **Diez personas de mentor** — desde Profesor amable hasta Maquiavelo. El contraste "
             "estilístico hace que los errores se recuerden.\n"
             "- **Diez tipos de ejercicios** — redacción, texto con huecos, traducción (ambos sentidos), "
-            "construcción de frases, detección de errores, sinónimos/antónimos, conjugación, quiz y "
-            "dictado audio con control de velocidad.\n"
+            "construcción de frases, detección de errores, sinónimos/antónimos, conjugación de verbos, "
+            "quiz de vocabulario, dictado audio (ElevenLabs, con control de velocidad) y comprensión "
+            "lectora (generado por IA / URL / texto pegado / TXT → opción múltiple + preguntas abiertas).\n"
             "- **BYOK (Bring Your Own Key)** — tus claves de OpenRouter y ElevenLabs se quedan en "
-            "tu sesión del navegador. Nunca se guardan ni se registran.\n"
+            "tu sesión del navegador. Nunca se guardan ni se registran. Los beta-testers pueden "
+            "dejarlo vacío — se usará la clave del servidor.\n"
             "- **Siete idiomas a aprender** — francés, inglés, español, ucraniano, alemán, polaco, hebreo.\n"
-            "- **Cuatro idiomas de interfaz** — inglés, alemán, francés, español, con detección automática por IP.\n\n"
+            "- **Siete idiomas de interfaz** — inglés, alemán, francés, español, ucraniano, polaco, "
+            "hebreo, con detección automática por IP en la primera visita.\n\n"
             "### Autor\n"
-            "Creado por **Bastian** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
-            "desarrollador IA/Python independiente en Múnich. Escrito originalmente a principios de "
-            "2025 como herramienta personal para practicar francés C1; refactorizado en 2026 en "
-            "esta versión modular, testada y multilingüe.\n\n"
+            "Creado por **Bastian Brand** ([Sitio web](https://www.bastian-brand.com/) · "
+            "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
+            "consultor independiente con sede en Múnich en análisis de datos, finanzas y automatización con IA, "
+            "ex McKinsey, con clientes de private equity, viajes, seguros y automoción en toda Europa. "
+            "lingua-app se escribió originalmente a principios de 2025 como herramienta personal para practicar "
+            "francés C1; refactorizado en 2026 en esta versión modular, testada y multilingüe.\n\n"
             "### Código fuente\n"
             "[lingua-app en GitHub](https://github.com/miraculix95/lingua-app) — open source bajo licencia MIT. Issues, PRs y feedback son bienvenidos."
         ),
@@ -840,6 +920,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "el_source_env": "🎙️ Voz: .env servidor ElevenLabs",
         "sidebar_heading": "⚙️ Configuración",
         "main_heading": "🎯 Área de práctica",
+        "home_btn": "🔄 Reiniciar",
+        "help_home": "Descarta la tarea actual y vuelve al selector de ejercicios. Idioma, nivel, registro, vocabulario y claves se mantienen.",
         "how_it_works": "👈 **Paso 1 — barra lateral:** configura coach, nivel, registro, fuente de vocabulario y clave API. **Paso 2 — aquí:** elige un ejercicio abajo y pulsa **Nueva tarea**.",
         "help_ui_language": "Idioma de botones, etiquetas y correcciones.",
         "help_learning_language": "El idioma que quieres practicar. Cambiable en cualquier momento — el vocabulario se reinicia.",
@@ -850,7 +932,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_url": "Pega la URL de un artículo — la app extrae vocabulario de ahí.",
         "help_ready_vocab": "Archivo de texto, una palabra por línea.",
         "help_model_tier": "Budget es el más barato; Best el más preciso. Para idiomas no-ingleses se usa un modelo más fuerte por defecto.",
-        "help_choose_exercise": "Todos los ejercicios usan el mismo vocabulario y ajustes de la barra lateral.",
+        "help_choose_exercise": "Elige qué tipo de práctica quieres hacer ahora. Cada opción es una forma distinta de trabajar tu vocabulario — rellenar huecos, traducir frases, escuchar un dictado, leer un texto y responder preguntas, etc. Cambiable en cualquier momento.",
         "help_new_task": "Regenerar una tarea con los ajustes actuales.",
         "help_correct": "Enviar tu respuesta al coach para corregir.",
         "help_num_blanks": "Cuántos huecos tendrá el texto.",
@@ -922,7 +1004,19 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "metric_tasks": "📚 Завдання",
         "metric_corrections": "✏️ Корекції",
         "metric_runs": "🔄 Сесії",
-        "choose_exercise": "🎯 Вибрати вправу",
+        "choose_exercise": "🎯 Вибрати тип вправи",
+        "practice_intro": "Обери тип вправи нижче. Кожен тип — інший спосіб попрактикувати словник — зосередься на одному або пройди всі по черзі.",
+        "types_overview_title": "📖 Які є типи вправ?",
+        "desc_writing": "📝 **Вільне письмо.** Отримуєш тему і пишеш короткий текст мовою, яку вивчаєш. Коуч виправляє граматику, лексику і стиль — у вибраному регістрі.",
+        "desc_cloze": "📖 **Текст із пропусками.** LLM створює короткий текст із пропусками. Ти вписуєш потрібні слова; коуч перевіряє.",
+        "desc_translation": "🔁 **Переклад речень.** Кілька речень для перекладу — у мову, яку вивчаєш, або з неї, на твій вибір.",
+        "desc_quiz": "🎲 **Словниковий квіз.** Формат карток: бачиш переклад, вводиш слово. Терпить дрібні одруки.",
+        "desc_sentence": "🧩 **Побудова речення.** Дано кілька слів — будуєш речення, яке їх природно використовує.",
+        "desc_error": "🔍 **Пошук помилок.** LLM пише речення з граматичними або орфографічними помилками. Ти їх знаходиш і виправляєш.",
+        "desc_synonym": "🔤 **Синоніми та антоніми.** Дано слово — ти наводиш синоніми й антоніми мовою, яку вивчаєш.",
+        "desc_conjugation": "🔠 **Дієвідмінювання.** Дано дієслово + особу — ти відмінюєш його в кількох часах.",
+        "desc_dictation": "🎙️ **Аудіодиктант.** LLM пише короткий текст, ElevenLabs його читає, ти записуєш. Повзунок швидкості — щоб сповільнити голос.",
+        "desc_reading": "📚 **Читання з розумінням.** Текст, згенерований ШІ, URL, вставлений текст або .txt — потім тест + відкриті питання.",
         "new_task_btn": "🎯 Нове завдання",
         "correct_btn": "📝 Перевірити текст",
         "task_heading": "Завдання",
@@ -986,24 +1080,33 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav_about": "Про",
         "about_title": "ℹ️ Про lingua",
         "about_body": (
-            "**lingua** — це мовний тренер на базі ШІ для практики на рівні C1 "
-            "з виправленнями, що враховують мовний регістр (від сленгу до літературного), "
-            "і персонами-наставниками, які змінюють голос фідбеку.\n\n"
-            "### У чому відмінність\n"
-            "- **Сім регістрів**, не просто «формальний проти неформального» — LLM узгоджує "
-            "виправлення з регістром, у якому ти пишеш.\n"
+            "**lingua-app** — це мовний тренер на базі ШІ для практики до рівня C1/C2, з "
+            "виправленнями, що враховують мовний регістр, і персонами-наставниками, які змінюють "
+            "голос фідбеку.\n\n"
+            "### Особливості\n"
+            "Чим lingua-app відрізняється від масових мовних застосунків (Duolingo, Babbel, Busuu):\n\n"
+            "- **Сім мовних регістрів**, не просто «формальний проти неформального» — LLM узгоджує "
+            "виправлення з регістром, у якому ти пишеш (злодійський жаргон · вульгарний · "
+            "розмовний · стандартний · формальний · літературний · технічний).\n"
             "- **Десять персон-наставників** — від Доброго вчителя до Макіавеллі. Стилістичний "
             "контраст робить помилки запам'ятовуваними.\n"
-            "- **Дев'ять типів вправ** — письмо, пропуски, переклад (в обох напрямках), "
-            "побудова речень, виявлення помилок, синоніми/антоніми, дієвідмінювання, квіз, "
-            "аудіодиктант зі слайдером швидкості.\n"
+            "- **Десять типів вправ** — письмо, пропуски, переклад (в обох напрямках), побудова "
+            "речень, виявлення помилок, синоніми/антоніми, дієвідмінювання, словниковий квіз, "
+            "аудіодиктант (ElevenLabs, зі слайдером швидкості) та читання з розумінням "
+            "(згенероване ШІ / URL / вставлений текст / TXT → тест + відкриті питання).\n"
             "- **BYOK (Bring Your Own Key)** — твої ключі OpenRouter і ElevenLabs залишаються "
-            "в сесії браузера. Ніколи не зберігаються і не логуються.\n"
+            "в сесії браузера. Ніколи не зберігаються і не логуються. Бета-тестери можуть "
+            "залишити порожнім — використається ключ сервера.\n"
             "- **Сім мов для вивчення** — французька, англійська, іспанська, українська, німецька, польська, іврит.\n"
-            "- **Чотири мови інтерфейсу** (плюс українська, польська, іврит) з авто-визначенням за IP.\n\n"
+            "- **Сім мов інтерфейсу** — англійська, німецька, французька, іспанська, українська, "
+            "польська, іврит, з авто-визначенням за IP при першому відвідуванні.\n\n"
             "### Автор\n"
-            "Створено **Бастіаном** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
-            "фріланс-розробником AI/Python з Мюнхена.\n\n"
+            "Створено **Бастіаном Брандом** ([Вебсайт](https://www.bastian-brand.com/) · "
+            "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
+            "незалежним консультантом з Мюнхена з аналізу даних, фінансів та AI-автоматизації, випускником McKinsey, "
+            "з клієнтами з приватного капіталу, туризму, страхування та автомобільної галузі по всій Європі. "
+            "lingua-app початково написано у 2025 році як персональний інструмент для практики французької C1; "
+            "у 2026 рефакторено в цей модульний, тестований, багатомовний реліз.\n\n"
             "### Сирцевий код\n"
             "[lingua-app на GitHub](https://github.com/miraculix95/lingua-app) — open source під ліцензією MIT. Issues, PR та фідбек вітаються."
         ),
@@ -1024,6 +1127,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "sidebar_heading": "⚙️ Налаштування",
         "main_heading": "🎯 Зона вправ",
+        "home_btn": "🔄 Скинути",
+        "help_home": "Скасувати поточне завдання і повернутися до вибору вправи. Мова, рівень, регістр, словник і ключі зберігаються.",
         "how_it_works": "👈 **Крок 1 — бічна панель:** налаштуй коуча, рівень, регістр, джерело словника та API-ключ. **Крок 2 — тут:** обери вправу нижче та натисни **Нове завдання**.",
         "help_ui_language": "Мова кнопок, підписів і відгуків.",
         "help_learning_language": "Мова, яку ти хочеш практикувати. Змінюй коли завгодно — словник обнуляється.",
@@ -1034,7 +1139,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_url": "Встав URL статті — застосунок витягне словник.",
         "help_ready_vocab": "Текстовий файл, одне слово на рядок.",
         "help_model_tier": "Budget — найдешевший, Best — найточніший. Для неанглійських мов за замовчуванням сильніша модель.",
-        "help_choose_exercise": "Усі вправи використовують той самий словник і налаштування бічної панелі.",
+        "help_choose_exercise": "Обери, який тип практики зараз. Кожен варіант — інший спосіб роботи зі словником: заповнення пропусків, переклад речень, прослуховування диктанту, читання тексту та відповіді на питання тощо. Міняй коли завгодно.",
         "help_new_task": "Згенерувати нове завдання з поточними налаштуваннями.",
         "help_correct": "Надіслати відповідь коучу на корекцію.",
         "help_num_blanks": "Скільки пропусків у тексті.",
@@ -1106,7 +1211,19 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "metric_tasks": "📚 Zadania",
         "metric_corrections": "✏️ Korekty",
         "metric_runs": "🔄 Sesje",
-        "choose_exercise": "🎯 Wybierz ćwiczenie",
+        "choose_exercise": "🎯 Wybierz typ ćwiczenia",
+        "practice_intro": "Wybierz typ ćwiczenia poniżej. Każdy typ to inny sposób ćwiczenia słownictwa — skup się na jednym albo przejdź wszystkie po kolei.",
+        "types_overview_title": "📖 Jakie są typy ćwiczeń?",
+        "desc_writing": "📝 **Pisanie swobodne.** Dostajesz temat i piszesz krótki tekst w języku, którego się uczysz. Coach poprawia gramatykę, słownictwo i styl — w wybranym rejestrze.",
+        "desc_cloze": "📖 **Tekst z lukami.** LLM tworzy krótki tekst z lukami. Wpisujesz brakujące słowa; coach sprawdza.",
+        "desc_translation": "🔁 **Tłumaczenie zdań.** Kilka zdań do tłumaczenia — na język, którego się uczysz, albo z niego.",
+        "desc_quiz": "🎲 **Quiz słownictwa.** Styl fiszek: widzisz tłumaczenie, wpisujesz słowo. Toleruje drobne literówki.",
+        "desc_sentence": "🧩 **Budowanie zdania.** Dano kilka słów — budujesz zdanie, które używa ich naturalnie.",
+        "desc_error": "🔍 **Wykrywanie błędów.** LLM pisze zdania zawierające błędy gramatyczne lub ortograficzne. Znajdujesz je i poprawiasz.",
+        "desc_synonym": "🔤 **Synonimy i antonimy.** Dane słowo — podajesz synonimy i antonimy w języku, którego się uczysz.",
+        "desc_conjugation": "🔠 **Koniugacja czasowników.** Dany czasownik + osoba — odmieniasz go w kilku czasach.",
+        "desc_dictation": "🎙️ **Dyktando audio.** LLM pisze krótki tekst, ElevenLabs go czyta, ty zapisujesz. Suwak prędkości do spowolnienia głosu.",
+        "desc_reading": "📚 **Czytanie ze zrozumieniem.** Tekst wygenerowany przez AI, URL, wklejony tekst albo przesłany .txt — potem test + pytania otwarte.",
         "new_task_btn": "🎯 Nowe zadanie",
         "correct_btn": "📝 Popraw tekst",
         "task_heading": "Zadanie",
@@ -1170,24 +1287,34 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav_about": "O aplikacji",
         "about_title": "ℹ️ O lingua",
         "about_body": (
-            "**lingua** to tutor językowy oparty na AI, stworzony do ćwiczenia na poziomie C1 "
-            "z korektami wrażliwymi na rejestr (slang → literacki → techniczny) i personami "
-            "mentorów, które zmieniają głos feedbacku.\n\n"
-            "### Co jest inne\n"
-            "- **Siedem rejestrów**, nie tylko 'formalny vs. potoczny' — LLM dopasowuje korektę "
-            "do rejestru, w którym piszesz.\n"
-            "- **Dziesięć person mentorów** — od Miłego nauczyciela do Machiavellego. Stylistyczny "
-            "kontrast sprawia, że błędy zapadają w pamięć.\n"
-            "- **Dziewięć typów ćwiczeń** — pisanie, luki, tłumaczenie (w obu kierunkach), "
-            "budowanie zdań, wykrywanie błędów, synonimy/antonimy, koniugacja, quiz i "
-            "dyktando audio z suwakiem prędkości.\n"
+            "**lingua-app** to tutor językowy oparty na AI, stworzony do ćwiczenia do poziomu "
+            "C1/C2, z korektami wrażliwymi na rejestr językowy i personami mentorów, które "
+            "zmieniają głos feedbacku.\n\n"
+            "### Wyróżniki\n"
+            "Co wyróżnia lingua-app na tle popularnych aplikacji (Duolingo, Babbel, Busuu):\n\n"
+            "- **Siedem rejestrów językowych**, nie tylko 'formalny vs. potoczny' — LLM "
+            "dopasowuje korektę do rejestru, w którym piszesz (gwara przestępcza · wulgarny · "
+            "potoczny · standardowy · formalny · literacki · techniczny).\n"
+            "- **Dziesięć person mentorów** — od Miłego nauczyciela do Machiavellego. "
+            "Stylistyczny kontrast sprawia, że błędy zapadają w pamięć.\n"
+            "- **Dziesięć typów ćwiczeń** — pisanie, luki, tłumaczenie (w obu kierunkach), "
+            "budowanie zdań, wykrywanie błędów, synonimy/antonimy, koniugacja czasowników, "
+            "quiz słownictwa, dyktando audio (ElevenLabs, z suwakiem prędkości) oraz czytanie "
+            "ze zrozumieniem (wygenerowane przez AI / URL / wklejony tekst / TXT → "
+            "test + pytania otwarte).\n"
             "- **BYOK (Bring Your Own Key)** — Twoje klucze OpenRouter i ElevenLabs pozostają "
-            "w sesji przeglądarki. Nigdy nie są zapisywane ani logowane.\n"
+            "w sesji przeglądarki. Nigdy nie są zapisywane ani logowane. Beta-testerzy mogą "
+            "zostawić puste — użyty zostanie klucz serwera.\n"
             "- **Siedem języków do nauki** — francuski, angielski, hiszpański, ukraiński, niemiecki, polski, hebrajski.\n"
-            "- **Siedem języków interfejsu** z automatycznym wykrywaniem po IP.\n\n"
+            "- **Siedem języków interfejsu** — angielski, niemiecki, francuski, hiszpański, "
+            "ukraiński, polski, hebrajski, z automatycznym wykrywaniem po IP przy pierwszej wizycie.\n\n"
             "### Autor\n"
-            "Stworzony przez **Bastiana** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
-            "freelance'owego developera AI/Python z Monachium.\n\n"
+            "Stworzony przez **Bastiana Branda** ([Strona](https://www.bastian-brand.com/) · "
+            "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
+            "freelance'owego konsultanta z Monachium w analizie danych, finansach i automatyzacji AI, alumnusa McKinseya, "
+            "z klientami z private equity, turystyki, ubezpieczeń i motoryzacji w całej Europie. "
+            "lingua-app został napisany pierwotnie na początku 2025 roku jako osobiste narzędzie do ćwiczenia "
+            "francuskiego C1; w 2026 zrefaktoryzowany do tej modularnej, testowanej, wielojęzycznej wersji.\n\n"
             "### Kod źródłowy\n"
             "[lingua-app na GitHubie](https://github.com/miraculix95/lingua-app) — open source na licencji MIT. Issues, PR-y i feedback mile widziane."
         ),
@@ -1208,6 +1335,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "sidebar_heading": "⚙️ Konfiguracja",
         "main_heading": "🎯 Obszar ćwiczeń",
+        "home_btn": "🔄 Zresetuj",
+        "help_home": "Odrzuć bieżące zadanie i wróć do wyboru ćwiczenia. Język, poziom, rejestr, słownictwo i klucze zostają.",
         "how_it_works": "👈 **Krok 1 — pasek boczny:** ustaw coacha, poziom, rejestr, źródło słownictwa i klucz API. **Krok 2 — tutaj:** wybierz ćwiczenie poniżej i kliknij **Nowe zadanie**.",
         "help_ui_language": "Język przycisków, etykiet i korekt.",
         "help_learning_language": "Język, który chcesz ćwiczyć. Można zmienić w dowolnej chwili — słownictwo jest resetowane.",
@@ -1218,7 +1347,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_url": "Wklej URL artykułu — aplikacja wydobędzie słownictwo.",
         "help_ready_vocab": "Plik tekstowy, jedno słowo na linię.",
         "help_model_tier": "Budget jest najtańszy, Best najdokładniejszy. Dla języków innych niż angielski domyślnie mocniejszy model.",
-        "help_choose_exercise": "Wszystkie ćwiczenia korzystają z tej samej listy słówek i ustawień paska bocznego.",
+        "help_choose_exercise": "Wybierz, jaki typ ćwiczenia chcesz zrobić teraz. Każda opcja to inny sposób pracy ze słownictwem — uzupełnianie luk, tłumaczenie zdań, słuchanie dyktanda, czytanie tekstu i odpowiadanie na pytania itd. Można zmienić w dowolnej chwili.",
         "help_new_task": "Wygeneruj nowe zadanie z aktualnymi ustawieniami.",
         "help_correct": "Wyślij odpowiedź do coacha do korekty.",
         "help_num_blanks": "Ile luk w tekście.",
@@ -1290,7 +1419,19 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "metric_tasks": "📚 משימות",
         "metric_corrections": "✏️ תיקונים",
         "metric_runs": "🔄 סשנים",
-        "choose_exercise": "🎯 בחר תרגיל",
+        "choose_exercise": "🎯 בחר סוג תרגיל",
+        "practice_intro": "בחר סוג תרגיל למטה. כל סוג הוא דרך אחרת לתרגל את אוצר המילים שלך — התרכז באחד או עבור על כולם בסדר.",
+        "types_overview_title": "📖 מה הם סוגי התרגילים?",
+        "desc_writing": "📝 **כתיבה חופשית.** אתה מקבל נושא וכותב טקסט קצר בשפת הלימוד. המאמן מתקן דקדוק, אוצר מילים וסגנון — ברגיסטר שבחרת.",
+        "desc_cloze": "📖 **טקסט פעור.** ה-LLM בונה טקסט קצר עם פערים. אתה מקליד את המילים החסרות; המאמן בודק.",
+        "desc_translation": "🔁 **תרגום משפטים.** כמה משפטים לתרגום — אל שפת הלימוד או ממנה, לבחירתך.",
+        "desc_quiz": "🎲 **חידון אוצר מילים.** סגנון כרטיסים: אתה רואה את התרגום, מקליד את המילה. סובלני לטעויות הקלדה קטנות.",
+        "desc_sentence": "🧩 **בניית משפט.** מספר מילים ניתנות — אתה בונה משפט שמשתמש בהן באופן טבעי.",
+        "desc_error": "🔍 **איתור שגיאות.** ה-LLM כותב כמה משפטים עם שגיאות דקדוק או כתיב. אתה מוצא ומתקן אותן.",
+        "desc_synonym": "🔤 **מילים נרדפות ומנוגדות.** מילה ניתנת — אתה מציע נרדפות ומנוגדות בשפת הלימוד.",
+        "desc_conjugation": "🔠 **הטיית פעלים.** פועל + גוף ניתנים — אתה מטה אותו בכמה זמנים.",
+        "desc_dictation": "🎙️ **הכתבה קולית.** ה-LLM כותב טקסט קצר, ElevenLabs מקריא אותו, אתה מתמלל. מחוון מהירות להאטת הקול.",
+        "desc_reading": "📚 **הבנת הנקרא.** טקסט שנוצר ע\"י AI, URL, טקסט מודבק או קובץ .txt שהועלה — לאחר מכן רב-ברירה + שאלות פתוחות.",
         "new_task_btn": "🎯 משימה חדשה",
         "correct_btn": "📝 תקן טקסט",
         "task_heading": "משימה",
@@ -1354,20 +1495,31 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav_about": "אודות",
         "about_title": "ℹ️ אודות lingua",
         "about_body": (
-            "**lingua** הוא מורה לשפה מבוסס בינה מלאכותית לתרגול ברמת C1, "
-            "עם תיקונים רגישים למשלב (סלנג → ספרותי → טכני) ודמויות מנטור שמחליפות את הקול של הפידבק.\n\n"
-            "### מה שונה\n"
-            "- **שבעה מִשלָבים**, לא רק 'רשמי מול יומיומי' — המודל מתאים את התיקון למשלב שבו אתה כותב.\n"
-            "- **עשר דמויות מנטור** — ממורה חביב ועד מקיאוולי. הניגוד הסגנוני עושה את השגיאות בלתי נשכחות.\n"
-            "- **תשעה סוגי תרגילים** — כתיבה, פעורים, תרגום (בשני הכיוונים), בניית משפטים, "
-            "איתור שגיאות, מילים נרדפות/מנוגדות, הטיית פעלים, חידון והכתבה עם שליטה במהירות.\n"
+            "**lingua-app** הוא מורה לשפה מבוסס בינה מלאכותית לתרגול עד רמת C1/C2, עם "
+            "תיקונים רגישים למשלב לשוני ודמויות מנטור שמחליפות את הקול של הפידבק.\n\n"
+            "### נקודות בולטות\n"
+            "מה מבדיל את lingua-app מאפליקציות שפה רגילות (Duolingo, Babbel, Busuu):\n\n"
+            "- **שבעה משלבים לשוניים**, לא רק 'רשמי מול יומיומי' — המודל מתאים את התיקון "
+            "למשלב שבו אתה כותב (סלנג עברייני · וולגרי · יומיומי · סטנדרטי · רשמי · ספרותי · טכני).\n"
+            "- **עשר דמויות מנטור** — ממורה חביב ועד מקיאוולי. הניגוד הסגנוני עושה את "
+            "השגיאות בלתי נשכחות.\n"
+            "- **עשרה סוגי תרגילים** — כתיבה, פעורים, תרגום (בשני הכיוונים), בניית משפטים, "
+            "איתור שגיאות, מילים נרדפות/מנוגדות, הטיית פעלים, חידון אוצר מילים, "
+            "הכתבה (ElevenLabs, עם שליטה במהירות) והבנת הנקרא (שנוצר ע\"י AI / URL / טקסט "
+            "מודבק / TXT → רב-ברירה + שאלות פתוחות).\n"
             "- **BYOK (Bring Your Own Key)** — המפתחות שלך ב-OpenRouter וב-ElevenLabs נשארים "
-            "בסשן הדפדפן בלבד. אף פעם לא נשמרים ולא נרשמים.\n"
+            "בסשן הדפדפן בלבד. אף פעם לא נשמרים ולא נרשמים. בודקי בטא יכולים להשאיר ריק — "
+            "ישמש המפתח של השרת.\n"
             "- **שבע שפות ללימוד** — צרפתית, אנגלית, ספרדית, אוקראינית, גרמנית, פולנית, עברית.\n"
-            "- **שבע שפות ממשק** עם זיהוי אוטומטי לפי IP.\n\n"
+            "- **שבע שפות ממשק** — אנגלית, גרמנית, צרפתית, ספרדית, אוקראינית, פולנית, "
+            "עברית, עם זיהוי אוטומטי לפי IP בביקור ראשון.\n\n"
             "### המחבר\n"
-            "נבנה על ידי **בסטיאן** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
-            "מפתח AI/Python עצמאי ממינכן.\n\n"
+            "נבנה על ידי **בסטיאן ברנד** ([אתר](https://www.bastian-brand.com/) · "
+            "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
+            "יועץ עצמאי ממינכן בתחום ניתוח נתונים, פיננסים ואוטומציית AI, בוגר מקינזי, "
+            "עם לקוחות מתעשיית ה-private equity, התיירות, הביטוח והרכב ברחבי אירופה. "
+            "lingua-app נכתב במקור בתחילת 2025 ככלי אישי לתרגול צרפתית ברמת C1; "
+            "ב-2026 עבר ריפקטורינג לגרסה מודולרית, מתוכלת ורב-לשונית זו.\n\n"
             "### קוד מקור\n"
             "[lingua-app ב-GitHub](https://github.com/miraculix95/lingua-app) — קוד פתוח ברישיון MIT. Issues, PRs ופידבק יתקבלו בברכה."
         ),
@@ -1388,6 +1540,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "sidebar_heading": "⚙️ הגדרות",
         "main_heading": "🎯 אזור תרגול",
+        "home_btn": "🔄 איפוס",
+        "help_home": "נקה את המשימה הנוכחית וחזור לבחירת תרגיל. שפה, רמה, רגיסטר, אוצר מילים ומפתחות נשמרים.",
         "how_it_works": "👈 **שלב 1 — סרגל צד:** הגדר מאמן, רמה, רגיסטר, מקור אוצר מילים ומפתח API. **שלב 2 — כאן:** בחר תרגיל מטה ולחץ **משימה חדשה**.",
         "help_ui_language": "שפת הכפתורים, התוויות והמשובים.",
         "help_learning_language": "השפה שאתה רוצה לתרגל. ניתן להחליף בכל עת — אוצר המילים מתאפס.",
@@ -1398,7 +1552,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_url": "הדבק URL של מאמר — האפליקציה תחלץ אוצר מילים.",
         "help_ready_vocab": "קובץ טקסט, מילה אחת בכל שורה.",
         "help_model_tier": "Budget הוא הזול ביותר; Best המדויק ביותר. לשפות שאינן אנגלית ברירת המחדל היא מודל חזק יותר.",
-        "help_choose_exercise": "כל התרגילים משתמשים באותו אוצר מילים והגדרות הסרגל הצדי.",
+        "help_choose_exercise": "בחר איזה סוג תרגול אתה רוצה לעשות עכשיו. כל אפשרות היא דרך שונה לעבוד עם אוצר המילים שלך — השלמת חורים, תרגום משפטים, הקשבה להכתבה, קריאת טקסט ומענה על שאלות ועוד. ניתן להחליף בכל עת.",
         "help_new_task": "הפק משימה חדשה עם ההגדרות הנוכחיות.",
         "help_correct": "שלח את התשובה למאמן לתיקון.",
         "help_num_blanks": "כמה חורים בטקסט.",

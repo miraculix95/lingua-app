@@ -413,6 +413,10 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             key="ui_lang_label",
             help=t("help_ui_language", ui_lang),
         )
+        # Mirror to a non-widget key so /about (which doesn't render this widget)
+        # can still see the chosen UI language. Streamlit garbage-collects widget
+        # state for widgets not rendered in the current script run.
+        st.session_state["_ui_lang_persisted"] = st.session_state.get("ui_lang_label", "")
 
         # Learning language — user can switch the target without restarting.
         learn_displays = [language_display(k, ui_lang).capitalize() for k in LANGUAGES]
@@ -731,11 +735,19 @@ def _correction_panel(
 def _resolve_ui_lang_for_nav() -> str:
     """Best effort UI-lang detection BEFORE the sidebar has rendered.
 
-    Used by main() to build nav labels. On first visit we only have request
-    headers; once the user has picked a language via the sidebar, the choice
-    lives in ``session_state['ui_lang_label']`` and wins on subsequent reruns.
+    Used by main() to build nav labels. Priority:
+    1. ``ui_lang_label`` — the sidebar widget (present while the main page
+       is the active route).
+    2. ``_ui_lang_persisted`` — a plain mirror we maintain because Streamlit
+       garbage-collects widget state for widgets that did not render on the
+       current route. Without this mirror, navigating to `/about` would lose
+       the user's language choice.
+    3. Request-header detection (first-visit fallback).
     """
-    selected_label = st.session_state.get("ui_lang_label")
+    selected_label = (
+        st.session_state.get("ui_lang_label")
+        or st.session_state.get("_ui_lang_persisted")
+    )
     if selected_label and selected_label in UI_LANGS:
         return UI_LANGS[selected_label]
     return _detect_initial_ui_lang()
@@ -830,14 +842,36 @@ def _render_main_page() -> None:
 
     st.info(t("how_it_works", ui_lang), icon="🎓")
     st.divider()
-    st.markdown(f"## {t('main_heading', ui_lang)}")
+    head_col, home_col = st.columns([4, 1])
+    head_col.markdown(f"## {t('main_heading', ui_lang)}")
+    if home_col.button(t("home_btn", ui_lang), help=t("help_home", ui_lang), key="home_btn"):
+        _soft_reset_tasks(state)
+        st.rerun()
+    st.caption(t("practice_intro", ui_lang))
     task_names = task_names_for(ui_lang)
+
+    # Pre-selection overview: expander with the full catalogue of types + their
+    # descriptions, so a user can browse before committing.
+    with st.expander(t("types_overview_title", ui_lang), expanded=False):
+        for i, key in enumerate(TASK_KEYS):
+            if not key:
+                continue
+            name = task_names[i]
+            desc = t(f"desc_{key}", ui_lang)
+            st.markdown(f"**{name}** — {desc}")
+
     task_label = st.selectbox(
         t("choose_exercise", ui_lang), task_names, key="task_type_sel",
         help=t("help_choose_exercise", ui_lang),
     )
     task_idx = task_names.index(task_label) if task_label in task_names else 0
     task_key = TASK_KEYS[task_idx]
+
+    # Show a short description of the picked type before any widgets render.
+    # Unknown/empty task_key has no desc_* key; t() falls back to the key itself,
+    # so we gate it explicitly.
+    if task_key:
+        st.info(t(f"desc_{task_key}", ui_lang), icon="📘")
 
     vocab_missing = not state.vocab_list
     needs_vocab = task_key not in ("", "writing", "reading")
@@ -1049,6 +1083,32 @@ def _render_dictation(
         if transcript.strip():
             orig = st.session_state["dictation_text"].strip()
             _render_dictation_diff(orig, transcript.strip())
+
+
+def _soft_reset_tasks(state: Any) -> None:
+    """Clear the current task + all task-specific caches. Sidebar config stays.
+
+    Resets the exercise-picker dropdown too so the user lands on the "choose
+    exercise" row (= the initial state after loading the app). Preserves
+    learning language, level, niveau, mentor, vocab list, UI lang, BYOK keys,
+    and dark-mode. Called by the 🏠 Home button.
+    """
+    state.task = ""
+    state.user_text = ""
+    for cache_key in (
+        # dictation
+        "dictation_bytes", "dictation_text", "dictation_revealed", "dictation_history",
+        # quiz
+        "current_quiz", "quiz_answers",
+        # reading (both state + source-picker widget keys)
+        "reading_passage", "reading_questions", "reading_mc_choices",
+        "reading_open_answers", "reading_results", "reading_reveal",
+        "read_source_pick", "read_length_pick", "read_theme_input",
+        "read_url_input", "read_paste_input", "read_file_input",
+        # exercise dropdown — force back to the blank "choose exercise" row
+        "task_type_sel",
+    ):
+        st.session_state.pop(cache_key, None)
 
 
 def _render_reading(

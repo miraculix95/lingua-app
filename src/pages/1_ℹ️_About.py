@@ -21,8 +21,14 @@ from src.i18n import (  # noqa: E402
     t,
 )
 
-# Resolve UI language from the sidebar picker (persisted in session_state).
-selected_label = st.session_state.get("ui_lang_label")
+# Resolve UI language: ui_lang_label is only present while the main page's
+# sidebar widget is rendered — on /about that widget doesn't exist and
+# Streamlit garbage-collects the key. We mirror it in `_ui_lang_persisted`
+# via the sidebar on every main-page render.
+selected_label = (
+    st.session_state.get("ui_lang_label")
+    or st.session_state.get("_ui_lang_persisted")
+)
 ui_lang = UI_LANGS.get(selected_label, DEFAULT_UI_LANG) if selected_label else DEFAULT_UI_LANG
 
 # Reapply the same theme as the main page — dark-mode, mobile CSS, UI-RTL if the
